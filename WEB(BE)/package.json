@@ -8,7 +8,7 @@
   },
   "type": "module",
   "scripts": {
-    "start": "nodemon server"
+    "start": "nodemon src/server"
   },
   "dependencies": {
     "@prisma/client": "^4.3.1",
