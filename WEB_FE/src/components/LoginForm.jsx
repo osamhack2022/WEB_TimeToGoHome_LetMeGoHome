@@ -7,7 +7,7 @@ function LoginForm({ Login, error }) {
 
   const submitHandler = e => {
     e.preventDefault();
-    axios.post('/api/login', details.email)
+    axios.post('/api/login', JSON.stringify(details))
     // eslint-disable-next-line prefer-arrow-callback
     .then(function (response) {
       console.log(response);
