@@ -12,7 +12,7 @@ app.get("/api/hello", (req, res) => {
 });
 
 app.post("/api/login", (req, res)=> {
-    console.log(req);
+    //console.log(req);
     res.send("로그인 완료");
 })
 
