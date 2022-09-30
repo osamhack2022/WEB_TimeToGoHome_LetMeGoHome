@@ -10,7 +10,61 @@ generator client {
   provider = "prisma-client-js"
 }
 
-model categories {
-  id     Int      @id @default(autoincrement())
-  name   String
+model users {
+  index           BigInt          @db.UnsignedBigInt @id @default(autoincrement())
+  username        String          @db.VarChar(10)
+  email_local     String          @db.VarChar(64)
+  email_domain    Int             @db.UnsignedInt
+  email_domains   email_domains   @relation(fields: [email_domain], references: [index])
+  password        String          @db.Char(60)
+  army_type       Int             @db.UnsignedTinyInt
+  army_types      army_types      @relation(fields: [army_type], references: [index])
+  army_rank       Int             @db.UnsignedTinyInt
+  army_ranks      army_ranks      @relation(fields: [army_rank], references: [index])
+  enlistment_date DateTime        @db.Date
+  discharge_date  DateTime        @db.Date
+}
+
+model todolists {
+  index           BigInt          @db.UnsignedBigInt @id @default(autoincrement())
+  share           shares?
+  todos           todos[]
+}
+
+model todos {
+  index           BigInt          @db.UnsignedBigInt @id @default(autoincrement())
+  todolist        BigInt          @db.UnsignedBigInt
+  todolists       todolists       @relation(fields: [todolist], references: [index])
+  content         String          @db.VarChar(50)
+  datetime        DateTime        @db.DateTime
+  is_done         Boolean         @default(false)
+}
+
+model shares {
+  todolist        BigInt          @db.UnsignedBigInt @id
+  todolists       todolists       @relation(fields: [todolist], references: [index])
+  title           String          @db.VarChar(50)
+  description     String          @db.VarChar(300)
+  image           String          @db.VarChar(150)
+  hit             BigInt          @db.UnsignedBigInt @default(0)
+  like            BigInt          @db.UnsignedBigInt @default(0)
+  datetime        DateTime        @db.DateTime
+}
+
+model email_domains {
+  index           Int             @db.UnsignedInt @id @default(autoincrement())
+  domain          String          @db.VarChar(255) @unique
+  users           users[]
+}
+
+model army_types {
+  index           Int             @db.UnsignedTinyInt @id @default(autoincrement())
+  type            String          @db.Char(9)
+  users           users[]
+}
+
+model army_ranks {
+  index           Int             @db.UnsignedTinyInt @id @default(autoincrement())
+  rank            String          @db.Char(9)
+  users           users[]
 }
