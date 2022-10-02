@@ -1,7 +1,8 @@
 import './App.css';
 import { useState } from 'react';
 import { BrowserRouter as Router, Route, Routes } from 'react-router-dom';
-import LoginForm from './components/LoginForm'
+import LoginForm from './components/LoginForm';
+import RegisterForm from './components/RegisterForm';
 
 
 
@@ -22,13 +23,20 @@ export default function App() {
   }
 
   return (
-    <div className="bg">
-      {(user.email !== "") ? (
-        <div className="welcome">
-          <h1>Welcome, {user.email}</h1>
+    <Router>
+      
+        <div className="bg">
+          {(user.email !== "") ? (
+            <div className="welcome">
+              <h1>Welcome, {user.email}</h1>
+            </div>
+          ) :
+          <Routes>
+            <Route path="/" element={<LoginForm Login={Login} error={error} />}/>
+            <Route path="/register" element={<RegisterForm/>}/>          
+          </Routes>
+          }
         </div>
-      ) :
-      <LoginForm Login={Login} error={error} />}
-    </div>
+    </Router>
   )
 }

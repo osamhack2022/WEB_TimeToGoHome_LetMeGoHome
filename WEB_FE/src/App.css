@@ -23,7 +23,7 @@ body, html {
   font-family: 'Inter';
   font-style: normal;
   font-weight: 600;
-  font-size: 80px;
+  font-size: 90px;
   line-height: 116px;
 
   /* Headline */
@@ -70,7 +70,7 @@ body, html {
 
   letter-spacing: 9px;
   font-weight: bolder;
-  font-size: 50px;
+  font-size: 65px;
   font-style: italic;
 }
 
@@ -86,8 +86,7 @@ body, html {
   height: 48px;
   left: 188px;
   top: 71vh;
-
-  background: #657C7B;
+  
   border-radius: 8px;
 
   /* Inside auto layout */
