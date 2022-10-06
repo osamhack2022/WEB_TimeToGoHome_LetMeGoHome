@@ -10,7 +10,7 @@ generator client {
   provider = "prisma-client-js"
 }
 
-model Users {
+model User {
   id              BigInt          @db.UnsignedBigInt @id @default(autoincrement())
   name            String          @db.VarChar(10)
   email           String          @db.VarChar(64)
@@ -19,39 +19,41 @@ model Users {
   army_rank       String          @db.Char(10)
   enlistment_date DateTime        @db.Date
   discharge_date  DateTime        @db.Date
-  todolists       Todolists[]
+  todolists       Todolist[]
 }
 
-model Todolists {
+model Todolist {
   id              BigInt          @db.UnsignedBigInt @id @default(autoincrement())
-  user            Users           @relation(fields: [userId], references: [id])
+  user            User            @relation(fields: [userId], references: [id])
   userId          BigInt
   goal            String          @db.VarChar(50) 
-  duration        Int 
+  duration        Int             
   start_date      DateTime        @db.Date @default(now())
   end_date        DateTime        @db.Date                   
-  share           Shares?
-  todos           Todos[]
   is_done         Boolean         @default(false)
+  is_share        Boolean         @default(false)
+  share           Share?
+  todos           Todo[]
 }
 
-model Todos {
+model Todo {
   id              BigInt          @db.UnsignedBigInt @id @default(autoincrement())
-  todolist        Todolists       @relation(fields: [todolistId], references: [id])
+  todolist        Todolist        @relation(fields: [todolistId], references: [id])
   todolistId      BigInt
   content         String          @db.VarChar(50)
   datetime        DateTime        @db.DateTime
   is_done         Boolean         @default(false)
 }
 
-model Shares {
+model Share {
   id              BigInt          @db.UnsignedBigInt @id @default(autoincrement())
-  todolists       Todolists       @relation(fields: [todolistId], references: [id])
+  todolists       Todolist        @relation(fields: [todolistId], references: [id])
   todolistId      BigInt          @db.UnsignedBigInt @unique
   title           String          @db.VarChar(50)
   description     String          @db.VarChar(300)
   image           String          @db.Text
   hit             BigInt          @db.UnsignedBigInt @default(0)
   like            BigInt          @db.UnsignedBigInt @default(0)
+  hash_tag        String          @db.VarChar(50)
   datetime        DateTime        @db.Date @default(now())
 }
