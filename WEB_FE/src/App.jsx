@@ -1,9 +1,10 @@
+/* eslint-disable react/no-unknown-property */
 import './App.css';
 import { useState } from 'react';
-import { BrowserRouter as Router, Route, Routes } from 'react-router-dom';
+
+import Router from './routers/router';
 import LoginForm from './components/LoginForm';
 import RegisterForm from './components/RegisterForm';
-
 
 
 export default function App() {
@@ -23,20 +24,8 @@ export default function App() {
   }
 
   return (
-    <Router>
-      
-        <div className="bg">
-          {(user.email !== "") ? (
-            <div className="welcome">
-              <h1>Welcome, {user.email}</h1>
-            </div>
-          ) :
-          <Routes>
-            <Route path="/" element={<LoginForm Login={Login} error={error} />}/>
-            <Route path="/register" element={<RegisterForm/>}/>          
-          </Routes>
-          }
-        </div>
-    </Router>
+    <div className="bg">
+      <Router user={user} Login={Login} error={error}/>
+    </div>
   )
 }
