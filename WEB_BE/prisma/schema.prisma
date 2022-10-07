@@ -1,59 +1,60 @@
-// This is your Prisma schema file,
-// learn more about it in the docs: https://pris.ly/d/prisma-schema
+generator client {
+  provider = "prisma-client-js"
+}
 
 datasource db {
   provider = "mysql"
   url      = env("DATABASE_URL")
 }
 
-generator client {
-  provider = "prisma-client-js"
-}
-
 model User {
-  id              BigInt          @db.UnsignedBigInt @id @default(autoincrement())
-  name            String          @db.VarChar(10)
-  email           String          @db.VarChar(64)
-  password        String          @db.Char(60)
-  army_type       String          @db.Char(10)
-  army_rank       String          @db.Char(10)
-  enlistment_date DateTime        @db.Date
-  discharge_date  DateTime        @db.Date
+  id              BigInt     @id @default(autoincrement()) @db.UnsignedBigInt
+  name            String     @db.VarChar(10)
+  email           String     @db.VarChar(64)
+  password        String     @db.Char(60)
+  army_type       String     @db.Char(10)
+  army_rank       String     @db.Char(10)
+  enlistment_date DateTime   @db.Date
+  discharge_date  DateTime   @db.Date
   todolists       Todolist[]
 }
 
 model Todolist {
-  id              BigInt          @db.UnsignedBigInt @id @default(autoincrement())
-  user            User            @relation(fields: [userId], references: [id])
-  userId          BigInt
-  goal            String          @db.VarChar(50) 
-  duration        Int             
-  start_date      DateTime        @db.Date @default(now())
-  end_date        DateTime        @db.Date                   
-  is_done         Boolean         @default(false)
-  is_share        Boolean         @default(false)
-  share           Share?
-  todos           Todo[]
+  id         BigInt   @id @default(autoincrement()) @db.UnsignedBigInt
+  userId     BigInt   @db.UnsignedBigInt
+  goal       String   @db.VarChar(50)
+  duration   Int
+  start_date DateTime @db.Date
+  end_date   DateTime @db.Date
+  is_done    Boolean  @default(false)
+  is_share   Boolean  @default(false)
+  user       User     @relation(fields: [userId], references: [id])
+  share      Share?
+  todos      Todo[]
+
+  @@index([userId], map: "Todolist_userId_fkey")
 }
 
 model Todo {
-  id              BigInt          @db.UnsignedBigInt @id @default(autoincrement())
-  todolist        Todolist        @relation(fields: [todolistId], references: [id])
-  todolistId      BigInt
-  content         String          @db.VarChar(50)
-  datetime        DateTime        @db.DateTime
-  is_done         Boolean         @default(false)
+  id         BigInt   @id @default(autoincrement()) @db.UnsignedBigInt
+  todolistId BigInt   @db.UnsignedBigInt
+  content    String   @db.VarChar(50)
+  datetime   DateTime @db.Date
+  is_done    Boolean  @default(false)
+  todolist   Todolist @relation(fields: [todolistId], references: [id])
+
+  @@index([todolistId], map: "Todo_todolistId_fkey")
 }
 
 model Share {
-  id              BigInt          @db.UnsignedBigInt @id @default(autoincrement())
-  todolists       Todolist        @relation(fields: [todolistId], references: [id])
-  todolistId      BigInt          @db.UnsignedBigInt @unique
-  title           String          @db.VarChar(50)
-  description     String          @db.VarChar(300)
-  image           String          @db.Text
-  hit             BigInt          @db.UnsignedBigInt @default(0)
-  like            BigInt          @db.UnsignedBigInt @default(0)
-  hash_tag        String          @db.VarChar(50)
-  datetime        DateTime        @db.Date @default(now())
+  id          BigInt   @id @default(autoincrement()) @db.UnsignedBigInt
+  todolistId  BigInt   @unique @db.UnsignedBigInt
+  title       String   @db.VarChar(50)
+  description String   @db.VarChar(300)
+  image       String   @db.Text
+  hit         BigInt   @default(0) @db.UnsignedBigInt
+  like        BigInt   @default(0) @db.UnsignedBigInt
+  hash_tag    String   @db.VarChar(50)
+  datetime    DateTime @db.Date
+  todolists   Todolist @relation(fields: [todolistId], references: [id])
 }
