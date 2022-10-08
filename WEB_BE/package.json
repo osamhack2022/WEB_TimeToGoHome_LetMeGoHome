@@ -8,11 +8,12 @@
   },
   "type": "module",
   "scripts": {
-    "start": "nodemon src/server",
+    "start": "nodemon src/controller/api",
     "dev": "concurrently \"npm run start\" \"cd ../WEB_FE && npm run start\""
   },
   "dependencies": {
     "@prisma/client": "^4.3.1",
+    "body-parser": "^1.20.0",
     "concurrently": "^7.4.0",
     "express": "^4.18.1"
   }
