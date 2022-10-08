@@ -24,7 +24,7 @@ model Todolist {
   userId     BigInt   @db.UnsignedBigInt
   goal       String   @db.VarChar(50)
   duration   Int
-  start_date DateTime @db.Date
+  start_date DateTime @default(now())
   end_date   DateTime @db.Date
   is_done    Boolean  @default(false)
   is_share   Boolean  @default(false)
@@ -55,6 +55,6 @@ model Share {
   hit         BigInt   @default(0) @db.UnsignedBigInt
   like        BigInt   @default(0) @db.UnsignedBigInt
   hash_tag    String   @db.VarChar(50)
-  datetime    DateTime @db.Date
+  post_time   DateTime @default(now())
   todolists   Todolist @relation(fields: [todolistId], references: [id])
 }
