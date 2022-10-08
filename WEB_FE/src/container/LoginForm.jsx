@@ -42,7 +42,7 @@ function LoginForm({ Login, error}) {
           {/* Error */}
           <div className="form-group">
             <input
-              type="text"
+              type="email"
               className="w-[502px] h-[35px] border-b focus:outline-0 border-slate-400 focus:border-slate-600 hover:border-slate-600 hover:transition-colors ease-in-out"
               name="email"
               id="email"

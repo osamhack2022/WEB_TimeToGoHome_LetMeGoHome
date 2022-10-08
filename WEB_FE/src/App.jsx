@@ -3,8 +3,8 @@ import './App.css';
 import { useState } from 'react';
 
 import Router from './routers/router';
-import LoginForm from './components/LoginForm';
-import RegisterForm from './components/RegisterForm';
+import LoginForm from './container/LoginForm';
+import RegisterForm from './container/RegisterForm';
 
 
 export default function App() {
