@@ -18,7 +18,7 @@ app.get("/api/hello", (req, res) => {
 
 app.post("/api/login", (req, res)=> {
     console.log(req.body);
-    res.send("로그인 완료");
+    res.send(req.body);
 })
 
 const server = app.listen(port, () => {
