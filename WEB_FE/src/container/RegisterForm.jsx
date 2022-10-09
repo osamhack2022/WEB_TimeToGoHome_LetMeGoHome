@@ -30,16 +30,11 @@ function RegisterForm() {
     if (e.target.id === "military") {
       setSelectedMilitary(e.target.textContent);
       setMilitaryActive(!isMilitaryActive);
-      
-    }
-    else if(e.target.id === "rank") {
+    } else if (e.target.id === "rank") {
       setSelectedRank(e.target.textContent);
       setRankActive(!isRankActive);
     }
   }
-
-  
-  
 
   return (
     <div>
@@ -119,25 +114,54 @@ function RegisterForm() {
             </div>
           </div> */}
           <div className="dropdown relative flex form-group-register mt-36 group w-[400px] m-0 m-auto select-none cursor-pointer">
-            <div id ="military" className="dropdown-btn rounded-md absolute w-2/5 flex justify-between p-[10px] bg-[#fff] shadow-[3px_3px_10px_6px_rgba(0,0,0,0.06)] items-center" onClick={e => setMilitaryActive(!isMilitaryActive)}>
+            <div
+              id="military"
+              className="dropdown-btn rounded-md absolute w-2/5 flex justify-between p-[10px] bg-[#fff] shadow-[3px_3px_10px_6px_rgba(0,0,0,0.06)] items-center"
+              onClick={(e) => setMilitaryActive(!isMilitaryActive)}
+            >
               <span>{selectedMilitary}</span>
-              <div className="traingle box-border w-[11px] h-[11px]"><img src={triangle} alt="Triangle img" className="src" /></div>
+              <div className="traingle box-border w-[11px] h-[11px]">
+                <img src={triangle} alt="Triangle img" className="src" />
+              </div>
             </div>
-            {isMilitaryActive && (<div className="dropdown-content bg-slate-50 rounded-md absolute top-[45px] p-[15px] shadow-bx w-2/5 z-10 transition-all">
-              {military.map(option => (
-                <div key={option} id="military" className="dropdown-item p-[10px] hover:bg-slate-100 z-10" onClick={handleDropdown}>{option}</div>
-              ))}
-            </div>)}
+            {isMilitaryActive && (
+              <div className="dropdown-content bg-slate-50 rounded-md absolute top-[45px] p-[15px] shadow-bx w-2/5 z-10 transition-all">
+                {military.map((option) => (
+                  <div
+                    key={option}
+                    id="military"
+                    className="dropdown-item p-[10px] hover:bg-slate-100 z-10"
+                    onClick={handleDropdown}
+                  >
+                    {option}
+                  </div>
+                ))}
+              </div>
+            )}
 
-            <div className="dropdown-btn rounded-md absolute w-2/5 left-1/2 flex justify-between p-[10px] bg-[#fff] shadow-[3px_3px_10px_6px_rgba(0,0,0,0.06)] items-center" onClick={e => setRankActive(!isRankActive)}>
+            <div
+              className="dropdown-btn rounded-md absolute w-2/5 left-1/2 flex justify-between p-[10px] bg-[#fff] shadow-[3px_3px_10px_6px_rgba(0,0,0,0.06)] items-center"
+              onClick={(e) => setRankActive(!isRankActive)}
+            >
               <span>{selectedRank}</span>
-              <div className="traingle box-border w-[11px] h-[11px]"><img src={triangle} alt="Triangle img" className="src" /></div>
+              <div className="traingle box-border w-[11px] h-[11px]">
+                <img src={triangle} alt="Triangle img" className="src" />
+              </div>
             </div>
-            {isRankActive && (<div className="dropdown-content bg-slate-50 rounded-md absolute top-[45px] left-1/2 p-[15px] shadow-bx w-2/5 z-10">
-              {rank.map((option) => (
-                <div key={option} id="rank" className="dropdown-item p-[10px] hover:bg-slate-100" onClick={handleDropdown}>{option}</div>
-              ))}
-            </div>)}
+            {isRankActive && (
+              <div className="dropdown-content bg-slate-50 rounded-md absolute top-[45px] left-1/2 p-[15px] shadow-bx w-2/5 z-10">
+                {rank.map((option) => (
+                  <div
+                    key={option}
+                    id="rank"
+                    className="dropdown-item p-[10px] hover:bg-slate-100"
+                    onClick={handleDropdown}
+                  >
+                    {option}
+                  </div>
+                ))}
+              </div>
+            )}
           </div>
 
           <div className="form-group-register mt-60">
@@ -148,19 +172,19 @@ function RegisterForm() {
               id="입영일"
               placeholder="입영일"
               onFocus={(e) => {
-                e.target.type="date";
+                e.target.type = "date";
                 const today = new Date();
                 const yyyy = today.getFullYear();
                 let mm = today.getMonth() + 1;
                 let dd = today.getDate();
 
-                if (dd < 10) dd = `0${  dd}`;
-                if (mm < 10) mm = `0${  mm}`;
-                e.target.max= `${yyyy  }-${  mm  }-${  dd}`;
-                e.target.min="2010-01-01";
-              }} 
+                if (dd < 10) dd = `0${dd}`;
+                if (mm < 10) mm = `0${mm}`;
+                e.target.max = `${yyyy}-${mm}-${dd}`;
+                e.target.min = "2010-01-01";
+              }}
               onBlur={(e) => {
-                e.target.type="text";
+                e.target.type = "text";
               }}
             />
           </div>
@@ -172,15 +196,15 @@ function RegisterForm() {
               id="전역일"
               placeholder="전역일"
               onFocus={(e) => {
-                e.target.type="date";
-                e.target.max="9999-12-31";
-                e.target.min="2010-01-01";
-              }} 
-              onBlur={(e) => {e.target.type="text"}}
+                e.target.type = "date";
+                e.target.max = "9999-12-31";
+                e.target.min = "2010-01-01";
+              }}
+              onBlur={(e) => {
+                e.target.type = "text";
+              }}
             />
-            
           </div>
-
 
           <button
             type="submit"

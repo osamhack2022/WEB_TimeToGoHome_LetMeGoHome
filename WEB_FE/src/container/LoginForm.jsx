@@ -7,18 +7,13 @@ import eye from "../images/eye.png";
 import eyeSlash from "../images/eyeSlash.png";
 
 // eslint-disable-next-line react/prop-types
-function LoginForm({ Login, error}) {
+function LoginForm({ Login, error }) {
   const [details, setDetails] = useState({ email: "", password: "" });
   const [eyeImage, setEye] = useState(eyeSlash);
 
   const submitHandler = (e) => {
     e.preventDefault();
-    axios
-      .post("/api/login", JSON.stringify(details))
-      // eslint-disable-next-line prefer-arrow-callback
-      .then(function (response) {
-        console.log(response);
-      });
+    Login(details);
   };
 
   function switchImage() {
@@ -71,7 +66,6 @@ function LoginForm({ Login, error}) {
               onClick={switchImage}
             />
           </div>
-
 
           <button
             type="submit"
