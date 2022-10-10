@@ -39,8 +39,8 @@ function RegisterForm() {
   return (
     <div>
       <span className="logo">이젠 돌아갈 때</span>
-      <form>
-        <div className="form-container">
+      <form className="relative h-screen flex flex-row-reverse">
+        <div className="relative bg-white lg:w-[45%] w-screen flex-wrap rounded-l-xl mb-5 mt-6 flex-col content-between">
           <div className="login-label">
             <span>Register</span>
           </div>
