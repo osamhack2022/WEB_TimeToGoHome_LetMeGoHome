@@ -1,3 +1,4 @@
+/* eslint-disable react/react-in-jsx-scope */
 /* eslint-disable no-console */
 /* eslint-disable react/no-unknown-property */
 import "./App.css";
@@ -48,7 +49,7 @@ export default function App() {
   };
 
   return (
-    <div className="bg">
+    <div>
       {useEffect(() => {
         const loggedInUser = localStorage.getItem("user");
         if (loggedInUser) {

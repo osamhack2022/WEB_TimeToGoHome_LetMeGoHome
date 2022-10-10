@@ -2,7 +2,6 @@
 /* eslint-disable jsx-a11y/click-events-have-key-events */
 // eslint-disable-next-line import/no-absolute-path
 import React, { useState } from "react";
-import axios from "axios";
 import eye from "../images/eye.png";
 import eyeSlash from "../images/eyeSlash.png";
 
@@ -27,10 +26,10 @@ function LoginForm({ Login, error }) {
   }
 
   return (
-    <div>
+    <div className="bg">
       <span className="logo">이젠 돌아갈 때</span>
       <form onSubmit={submitHandler} className="relative h-screen flex flex-row-reverse">
-        <div className="relative bg-white lg:w-[45%] w-screen flex-wrap rounded-l-2xl mb-5 mt-6 flex-col content-between">
+        <div className="relative bg-white lg:w-[45%] w-screen flex-wrap rounded-l-3xl mb-5 mt-6 flex-col content-between">
           <div className="login-label">
             <span>Login</span>
           </div>
@@ -74,7 +73,7 @@ function LoginForm({ Login, error }) {
           >
             <span id="login-btn-text">Login</span>
           </button>
-          <span className="absolute left-[188px] top-[79vh] text-slate-300 text-bg">
+          <span className="absolute left-[168px] top-[79vh] text-slate-300 text-bg">
             Don&apos;t have an account?{" "}
             <a className="text-greenish" href="./register">
               Register

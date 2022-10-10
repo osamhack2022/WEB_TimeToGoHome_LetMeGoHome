@@ -21,7 +21,7 @@ html {
   position: absolute;
   width: 802px;
   height: 107px;
-  left: 158px;
+  left: 148px;
   top: 407px;
 
   font-family: "Inter";
@@ -43,7 +43,7 @@ html {
   position: absolute;
   width: 502px;
   height: 35px;
-  left: 138px;
+  left: 158px;
   top: 401px;
 }
 
@@ -54,7 +54,7 @@ html {
   position: absolute;
   width: 502px;
   height: 35px;
-  left: 148px;
+  left: 158px;
   top: 30vh;
 }
 
@@ -65,7 +65,7 @@ html {
   position: absolute;
   width: 487px;
   height: 98px;
-  left: 128px;
+  left: 158px;
   top: 97px;
 
   letter-spacing: 9px;
@@ -84,7 +84,7 @@ html {
   position: absolute;
   width: 502px;
   height: 48px;
-  left: 148px;
+  left: 158px;
   top: 71vh;
 
   border-radius: 8px;
@@ -105,10 +105,4 @@ html {
   width: 502px;
   height: 48px;
   color: #ffffff;
-}
-
-#wrapper {
-  margin-left:auto;
-  margin-right:auto;
-  width:960px;
 }

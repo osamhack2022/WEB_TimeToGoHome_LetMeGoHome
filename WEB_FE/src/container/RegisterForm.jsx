@@ -37,10 +37,10 @@ function RegisterForm() {
   }
 
   return (
-    <div>
+    <div className="bg">
       <span className="logo">이젠 돌아갈 때</span>
       <form className="relative h-screen flex flex-row-reverse">
-        <div className="relative bg-white lg:w-[45%] w-screen flex-wrap rounded-l-xl mb-5 mt-6 flex-col content-between">
+        <div className="relative bg-white lg:w-[45%] w-screen flex-wrap rounded-l-3xl mb-5 mt-6 flex-col content-between">
           <div className="login-label">
             <span>Register</span>
           </div>
@@ -214,7 +214,7 @@ function RegisterForm() {
             <span id="login-btn-text">Create Account</span>
           </button>
 
-          <span className="absolute left-[188px] top-[79vh] text-slate-300 text-bg">
+          <span className="absolute left-[168px] top-[79vh] text-slate-300 text-bg">
             Already have an account?{" "}
             <a className="text-greenish" href="./">
               Login
