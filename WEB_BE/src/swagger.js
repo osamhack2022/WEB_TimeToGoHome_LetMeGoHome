@@ -1,3 +1,6 @@
+import path from "path";
+const __dirname = path.resolve();
+
 const options = {
   definition: {
     openapi: "3.0.3",
@@ -21,7 +24,7 @@ const options = {
       },
     ],
   },
-  apis: ["./models/*.js", "./routes/*.js"],
+  apis: [`${__dirname}/src/models/*.js`, `${__dirname}/src/routes/*.js`],
 };
 
 export default options;
