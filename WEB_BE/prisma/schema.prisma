@@ -14,41 +14,41 @@ model User {
   password        String     @db.Char(60)
   army_type       String     @db.Char(10)
   army_rank       String     @db.Char(10)
-  enlistment_date DateTime   @db.Date
-  discharge_date  DateTime   @db.Date
-  todolists       Todolist[]
-}
-
-model Todolist {
-  id         BigInt   @id @default(autoincrement()) @db.UnsignedBigInt
-  userId     BigInt   @db.UnsignedBigInt
-  goal       String   @db.VarChar(50)
-  duration   Int
-  start_date DateTime @default(now())
-  end_date   DateTime @db.Date
-  is_done    Boolean  @default(false)
-  is_share   Boolean  @default(false)
-  user       User     @relation(fields: [userId], references: [id])
-  share      Share?
-  todos      Todo[]
-
-  @@index([userId], map: "Todolist_userId_fkey")
+  enlistment      DateTime   @db.Date
+  discharge       DateTime   @db.Date
+  todos           Todo[]
 }
 
 model Todo {
   id         BigInt   @id @default(autoincrement()) @db.UnsignedBigInt
-  todolistId BigInt   @db.UnsignedBigInt
+  userId     BigInt   @db.UnsignedBigInt
+  goal       String   @db.VarChar(50)
+  duration   Int
+  start      DateTime @default(now())
+  end        DateTime @db.Date
+  is_done    Boolean  @default(false)
+  is_share   Boolean  @default(false)
+  user       User     @relation(fields: [userId], references: [id])
+  share      Share?
+  tasks      Task[]
+
+  @@index([userId], map: "Todo_userId_fkey")
+}
+
+model Task {
+  id         BigInt   @id @default(autoincrement()) @db.UnsignedBigInt
+  todoId     BigInt   @db.UnsignedBigInt
   content    String   @db.VarChar(50)
   datetime   DateTime @db.Date
   is_done    Boolean  @default(false)
-  todolist   Todolist @relation(fields: [todolistId], references: [id])
+  todo       Todo     @relation(fields: [todoId], references: [id])
 
-  @@index([todolistId], map: "Todo_todolistId_fkey")
+  @@index([todoId], map: "Todo_todoId_fkey")
 }
 
 model Share {
   id          BigInt   @id @default(autoincrement()) @db.UnsignedBigInt
-  todolistId  BigInt   @unique @db.UnsignedBigInt
+  todoId      BigInt   @unique @db.UnsignedBigInt
   title       String   @db.VarChar(50)
   description String   @db.VarChar(300)
   image       String   @db.Text
@@ -56,5 +56,5 @@ model Share {
   like        BigInt   @default(0) @db.UnsignedBigInt
   hash_tag    String   @db.VarChar(50)
   post_time   DateTime @default(now())
-  todolists   Todolist @relation(fields: [todolistId], references: [id])
+  todos       Todo     @relation(fields: [todoId], references: [id])
 }
