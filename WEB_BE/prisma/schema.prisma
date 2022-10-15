@@ -8,7 +8,7 @@ datasource db {
 }
 
 model User {
-  id              BigInt     @id @default(autoincrement()) @db.UnsignedBigInt
+  id              Int     @id @default(autoincrement()) @db.UnsignedInt
   name            String     @db.VarChar(10)
   email           String     @db.VarChar(64)
   password        String     @db.Char(60)
@@ -20,8 +20,8 @@ model User {
 }
 
 model Todo {
-  id         BigInt   @id @default(autoincrement()) @db.UnsignedBigInt
-  userId     BigInt   @db.UnsignedBigInt
+  id         Int   @id @default(autoincrement()) @db.UnsignedInt
+  userId     Int   @db.UnsignedInt
   goal       String   @db.VarChar(50)
   duration   Int
   start      DateTime @default(now())
@@ -36,8 +36,8 @@ model Todo {
 }
 
 model Task {
-  id         BigInt   @id @default(autoincrement()) @db.UnsignedBigInt
-  todoId     BigInt   @db.UnsignedBigInt
+  id         Int   @id @default(autoincrement()) @db.UnsignedInt
+  todoId     Int   @db.UnsignedInt
   content    String   @db.VarChar(50)
   datetime   DateTime @db.Date
   is_done    Boolean  @default(false)
@@ -47,13 +47,13 @@ model Task {
 }
 
 model Share {
-  id          BigInt   @id @default(autoincrement()) @db.UnsignedBigInt
-  todoId      BigInt   @unique @db.UnsignedBigInt
+  id          Int   @id @default(autoincrement()) @db.UnsignedInt
+  todoId      Int   @unique @db.UnsignedInt
   title       String   @db.VarChar(50)
   description String   @db.VarChar(300)
   image       String   @db.Text
-  hit         BigInt   @default(0) @db.UnsignedBigInt
-  like        BigInt   @default(0) @db.UnsignedBigInt
+  hit         Int   @default(0) @db.UnsignedInt
+  like        Int   @default(0) @db.UnsignedInt
   hash_tag    String   @db.VarChar(50)
   post_time   DateTime @default(now())
   todos       Todo     @relation(fields: [todoId], references: [id])
