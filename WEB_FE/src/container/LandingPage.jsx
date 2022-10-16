@@ -1,3 +1,4 @@
+/* eslint-disable import/no-extraneous-dependencies */
 /* eslint-disable no-param-reassign */
 /* eslint-disable no-unused-expressions */
 /* eslint-disable jsx-a11y/label-has-associated-control */
@@ -5,15 +6,23 @@
 /* eslint-disable react/self-closing-comp */
 /* eslint-disable react/prop-types */
 
-import React, { useState } from "react";
+import React, { useState, useEffect } from "react";
+import axios from "axios";
+import dayjs from "dayjs";
+import Calendar from 'react-calendar';
+// eslint-disable-next-line import/no-extraneous-dependencies
+import 'react-calendar/dist/Calendar.css';
+
 import AddTodoListImg from "../images/Add_1.png";
 import AddTodo from "../images/Add_2.png";
 import TrashImg from "../images/Trash_1.png";
 
 function LandingPage({ user, Logout }) {
-  console.log(user);
-  const [todo, setTodo] = useState({ id: "", content: "", datetime: "" });
-  const [todoList, setTodoList] = useState([
+  const [todoLists, setTodolists] = useState(["3대350", "3대400"]);
+  const [inputTodo, setInput] = useState("");
+  const [value, onChange] = useState(new Date());
+  const [task, setTask] = useState({ id: "", content: "", datetime: "" });
+  const [taskList, setTaskList] = useState([
     {
       id: 1,
       content: "덤벨 프레스 5set",
@@ -34,25 +43,63 @@ function LandingPage({ user, Logout }) {
     },
   ]);
 
+  useEffect(() => {
+    axios.get("https://petercode.kro.kr/api/todo/me").then((response) => {
+      console.log(response);
+      setTodolists(response.data.payload);
+    });
+  }, [])
+
   const submitHandler = () => {
-    
-    setTodoList([
-      ...todoList,
+    setTaskList([
+      ...taskList,
       {
-        id: todoList.length + 1,
-        content: todo.content,
-        datetime: todo.datetime,
+        id: taskList.length + 1,
+        content: task.content,
+        datetime: task.datetime,
         is_done: false,
       },
     ]);
-  }
+  };
 
+  useEffect(() => {
+    if (inputTodo) {
+      setTask({...task, content: inputTodo});
+    }
+    console.log(inputTodo);
+  }, [inputTodo]);
+
+  function handleAddTask(e) {
+    e.preventDefault();
+
+    if (!task.content) {
+      // eslint-disable-next-line no-alert
+      alert("할 일을 입력해주세요!");
+      return;
+    }
+    const isTodoInList = taskList.some(
+      (taskItem) =>
+        taskItem.content.toLowerCase().replace(/\s/g, "") ===
+        task.content.toLowerCase().replace(/\s/g, "")
+    );
+    if (isTodoInList) {
+      // eslint-disable-next-line no-alert
+      alert("이미 추가된 할 일입니다!");
+      return;
+    }
+  
+    submitHandler();
+    document.getElementById("input_task").value = "";
+    setTask({ id: "", content: "", datetime: "" });
+    document.getElementById("myModal").style.display = "none";
+    
+    
+  }
   function deleteTodoList(id) {
-    const newTodoList = todoList.filter((todo, i) => todo.id !== id);
-    setTodoList(newTodoList);
+    const newTodoList = taskList.filter((TASK, i) => TASK.id !== id);
+    setTaskList(newTodoList);
   }
 
- 
   return (
     <div>
       <nav className="bg-primary h-20 flex items-center justify-between">
@@ -71,15 +118,32 @@ function LandingPage({ user, Logout }) {
         <div className="flex flex-col items-center justify-start h-[91.5vh] grow-0 w-[330px]">
           <h1 className="text-4xl font-bold mt-6">Welcome</h1>
           <h1 className="text-4xl font-bold">{user.name}</h1>
+          <div className="grow flex flex-col justify-center">
+            {todoLists.map((option) => (
+              <button
+                className="flex flex-row items-center justify-center w-[300px] h-[50px] bg-white rounded-md mt-2"
+                key={option.id}
+                type="button"
+                id="todolist-btn"
+              >
+                <label
+                  className="text-3xl font-bold hover:border-b-2 hover:border-slate-800 cursor-pointer"
+                  htmlFor="todolist-btn"
+                >
+                  {option.goal}
+                </label>
+              </button>
+            ))}
+          </div>
         </div>
 
         <div className="dashboard flex flex-row ml-10 bg-gray-200 w-screen">
-          <div className="relative todoList bg-white w-3/12 ml-28 rounded-2xl flex flex-col mt-8 mb-8 content-between">
+          <div className="relative taskList bg-white w-3/12 ml-28 rounded-2xl flex flex-col mt-8 mb-8 content-between">
             <nav className="bg-primary h-12 rounded-t-2xl flex items-center justify-center">
               <h1 className="text-2xl font-bold text-white">10월11일</h1>
             </nav>
             <div className="flex flex-col justify-center">
-              {todoList.map((option) => (
+              {taskList.map((option) => (
                 <div key={option.id} className="form-check hover:bg-slate-200">
                   <input
                     className="form-check-input ml-3 appearance-none h-6 w-6 border border-gray-300 rounded-sm bg-white checked:bg-blue-600 checked:border-blue-600 focus:outline-none transition duration-200 mt-1 align-top bg-no-repeat bg-center bg-contain float-left mr-2 cursor-pointer"
@@ -153,48 +217,21 @@ function LandingPage({ user, Logout }) {
                   </span>
                   <div className="flex justify-center">
                     <input
-                      id="input_todo"
+                      id="input_task"
                       className="w-4/6 h-12 border-2 border-gray-300 rounded-lg mt-5 p-5"
                       type="text"
                       placeholder="ex) 운동하기"
+                      onChange={(e) => {
+                        setInput(e.target.value);
+                      }}
                     />
                   </div>
                   <button
                     type="button"
                     className="mx-auto w-[60px] h-[60px] mt-16"
-                    onClick={(e) => {
-                      setTodo({
-                        content: document.getElementById("input_todo").value,
-                        datetime: new Date(),
-                        is_done: false,
-                      });
-                      // need fixing
-
-                      if (todo.content === "") {
-                        // eslint-disable-next-line no-alert
-                        alert("할 일을 입력해주세요!");
-                        return;
-                      }
-                      // check if the todo is already in the list ignore space and case sensitivity and space between words
-                      const isTodoInList = todoList.some(
-                        (todoItem) =>
-                          todoItem.content
-                            .toLowerCase()
-                            .replace(/\s/g, "") ===
-                          todo.content.toLowerCase().replace(/\s/g, "")
-                      );
-                      if (isTodoInList) {
-                        // eslint-disable-next-line no-alert
-                        alert("이미 추가된 할 일입니다!");
-                        return;
-                      }
-                      
-                      submitHandler();
-                      document.getElementById("input_todo").value = "";
-                      document.getElementById("myModal").style.display = "none";
-                    }}
+                    onClick={handleAddTask}
                   >
-                    <img src={AddTodo} alt="Addtodo" />
+                    <img src={AddTodo} alt="Addtask" />
                   </button>
                 </div>
               </div>
@@ -202,8 +239,9 @@ function LandingPage({ user, Logout }) {
           </div>
           <div className="calandar bg-white w-6/12 ml-28 rounded-2xl mt-8 mb-8">
             <nav className="bg-primary h-12 rounded-t-2xl flex items-center justify-center font-['Lato']">
-              <h1 className="text-2xl font-bold text-white">2022년 10월</h1>
+              <h1 className="text-2xl font-bold text-white">{dayjs(value).format("YYYY년 MM월 DD일")}</h1>
             </nav>
+            <Calendar onChange={onChange} value={value} />
           </div>
         </div>
       </div>
