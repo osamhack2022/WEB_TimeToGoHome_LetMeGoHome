@@ -26,7 +26,7 @@ function LoginForm({ Login, error }) {
   }
 
   return (
-    <div className="bg">
+    <div className="bg w-[100vw] h-[100vh]">
       <span className="logo">이젠 돌아갈 때</span>
       <form onSubmit={submitHandler} className="relative h-screen flex flex-row-reverse">
         <div className="relative bg-white lg:w-[45%] w-screen flex-wrap rounded-l-3xl mb-5 mt-6 flex-col content-between">

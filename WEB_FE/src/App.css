@@ -10,8 +10,6 @@ html {
       rgba(255, 255, 255, 0.5)
     ),
     url("./images/bg.jpg");
-  width: 100vw;
-  height: 100vh;
   background-position: center;
   background-repeat: no-repeat;
   background-size: cover;
@@ -34,7 +32,6 @@ html {
 
   color: #455a59;
 }
-
 
 .form-group {
   padding: 2px;
@@ -105,4 +102,19 @@ html {
   width: 502px;
   height: 48px;
   color: #ffffff;
+}
+
+/* The Close Button */
+.close {
+  color: #aaa;
+  float: right;
+  font-size: 28px;
+  font-weight: bold;
+}
+
+.close:hover,
+.close:focus {
+  color: black;
+  text-decoration: none;
+  cursor: pointer;
 }
