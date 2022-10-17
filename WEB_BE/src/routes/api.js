@@ -1,5 +1,8 @@
 import express from "express";
 const router = express.Router();
+import todoRouter from "./todo/todo.js";
+
+router.use("/todo", todoRouter);
 
 router.get("/hello", (req, res) => {
   res.send("연결 완료");
