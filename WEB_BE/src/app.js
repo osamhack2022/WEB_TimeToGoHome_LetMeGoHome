@@ -9,7 +9,7 @@ import swaggerUi from "swagger-ui-express";
 import swaggerOptions from "./swagger.js";
 const specs = swaggerJsdoc(swaggerOptions);
 
-import apiRouter from "./routes/api.js";
+import apiRouter from "./routes/router.js";
 
 app.use(bodyParser.urlencoded({ extended: true }));
 app.use(bodyParser.json());
