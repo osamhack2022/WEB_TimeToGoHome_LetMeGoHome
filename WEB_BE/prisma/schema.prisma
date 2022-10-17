@@ -8,53 +8,53 @@ datasource db {
 }
 
 model User {
-  id              BigInt     @id @default(autoincrement()) @db.UnsignedBigInt
-  name            String     @db.VarChar(10)
-  email           String     @db.VarChar(64)
-  password        String     @db.Char(60)
-  army_type       String     @db.Char(10)
-  army_rank       String     @db.Char(10)
-  enlistment_date DateTime   @db.Date
-  discharge_date  DateTime   @db.Date
-  todolists       Todolist[]
-}
-
-model Todolist {
-  id         BigInt   @id @default(autoincrement()) @db.UnsignedBigInt
-  userId     BigInt   @db.UnsignedBigInt
-  goal       String   @db.VarChar(50)
-  duration   Int
-  start_date DateTime @default(now())
-  end_date   DateTime @db.Date
-  is_done    Boolean  @default(false)
-  is_share   Boolean  @default(false)
-  user       User     @relation(fields: [userId], references: [id])
-  share      Share?
-  todos      Todo[]
-
-  @@index([userId], map: "Todolist_userId_fkey")
+  id         Int      @id @default(autoincrement()) @db.UnsignedInt
+  name       String   @db.VarChar(10)
+  email      String   @db.VarChar(64)
+  password   String   @db.Char(60)
+  army_type  String   @db.Char(10)
+  army_rank  String   @db.Char(10)
+  enlistment DateTime @db.Date
+  discharge  DateTime @db.Date
+  Todo       Todo[]
 }
 
 model Todo {
-  id         BigInt   @id @default(autoincrement()) @db.UnsignedBigInt
-  todolistId BigInt   @db.UnsignedBigInt
-  content    String   @db.VarChar(50)
-  datetime   DateTime @db.Date
-  is_done    Boolean  @default(false)
-  todolist   Todolist @relation(fields: [todolistId], references: [id])
+  id       Int      @id @default(autoincrement()) @db.UnsignedInt
+  userId   Int      @db.UnsignedInt
+  goal     String   @db.VarChar(50)
+  duration Int
+  start    DateTime @default(now())
+  end      DateTime @db.Date
+  is_done  Boolean  @default(false)
+  is_share Boolean  @default(false)
+  User     User     @relation(fields: [userId], references: [id])
+  Share    Share?
+  Task     Task[]
 
-  @@index([todolistId], map: "Todo_todolistId_fkey")
+  @@index([userId], map: "Todo_userId_fkey")
 }
 
 model Share {
-  id          BigInt   @id @default(autoincrement()) @db.UnsignedBigInt
-  todolistId  BigInt   @unique @db.UnsignedBigInt
+  id          Int      @id @default(autoincrement()) @db.UnsignedInt
+  todoId      Int      @unique @db.UnsignedInt
   title       String   @db.VarChar(50)
   description String   @db.VarChar(300)
   image       String   @db.Text
-  hit         BigInt   @default(0) @db.UnsignedBigInt
-  like        BigInt   @default(0) @db.UnsignedBigInt
+  hit         Int      @default(0) @db.UnsignedInt
+  like        Int      @default(0) @db.UnsignedInt
   hash_tag    String   @db.VarChar(50)
   post_time   DateTime @default(now())
-  todolists   Todolist @relation(fields: [todolistId], references: [id])
+  Todo        Todo     @relation(fields: [todoId], references: [id])
+}
+
+model Task {
+  id       Int      @id @default(autoincrement()) @db.UnsignedInt
+  todoId   Int      @db.UnsignedInt
+  content  String   @db.VarChar(50)
+  datetime DateTime @db.Date
+  is_done  Boolean  @default(false)
+  Todo     Todo     @relation(fields: [todoId], references: [id])
+
+  @@index([todoId], map: "Todo_todoId_fkey")
 }
