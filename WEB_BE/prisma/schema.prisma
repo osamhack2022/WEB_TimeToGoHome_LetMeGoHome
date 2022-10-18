@@ -8,27 +8,28 @@ datasource db {
 }
 
 model User {
-  id              Int     @id @default(autoincrement()) @db.UnsignedInt
-  name            String     @db.VarChar(10)
-  email           String     @db.VarChar(64)
-  password        String     @db.Char(60)
-  army_type       String     @db.Char(10)
-  army_rank       String     @db.Char(10)
-  enlistment      DateTime   @db.Date
-  discharge       DateTime   @db.Date
-  todos           Todo[]
+  id          Int        @id @default(autoincrement()) @db.UnsignedInt
+  name        String     @db.VarChar(10) @unique
+  email       String     @db.VarChar(64) @unique
+  password    String     @db.Char(60)
+  image       String?    @db.Text
+  armyType    String     @db.Char(10)
+  armyRank    String     @db.Char(10)
+  enlistment  DateTime   @db.Date
+  discharge   DateTime   @db.Date
+  todos       Todo[]
 }
 
 model Todo {
-  id         Int   @id @default(autoincrement()) @db.UnsignedInt
-  userId     Int   @db.UnsignedInt
-  goal       String   @db.VarChar(50)
+  id         Int         @id @default(autoincrement()) @db.UnsignedInt
+  userId     Int         @db.UnsignedInt
+  goal       String      @db.VarChar(50)
   duration   Int
-  start      DateTime @default(now())
-  end        DateTime @db.Date
-  is_done    Boolean  @default(false)
-  is_share   Boolean  @default(false)
-  user       User     @relation(fields: [userId], references: [id])
+  start      DateTime    @db.Date
+  end        DateTime    @db.Date
+  isDone     Boolean     @default(false)
+  isShared   Boolean     @default(false)
+  user       User        @relation(fields: [userId], references: [id])
   share      Share?
   tasks      Task[]
 
@@ -36,25 +37,25 @@ model Todo {
 }
 
 model Task {
-  id         Int   @id @default(autoincrement()) @db.UnsignedInt
-  todoId     Int   @db.UnsignedInt
+  id         Int      @id @default(autoincrement()) @db.UnsignedInt
+  todoId     Int      @db.UnsignedInt
   content    String   @db.VarChar(50)
-  datetime   DateTime @db.Date
-  is_done    Boolean  @default(false)
+  datetime   DateTime
+  isDone     Boolean  @default(false)
   todo       Todo     @relation(fields: [todoId], references: [id])
 
   @@index([todoId], map: "Todo_todoId_fkey")
 }
 
 model Share {
-  id          Int   @id @default(autoincrement()) @db.UnsignedInt
-  todoId      Int   @unique @db.UnsignedInt
+  id          Int      @id @default(autoincrement()) @db.UnsignedInt
+  todoId      Int      @unique @db.UnsignedInt
   title       String   @db.VarChar(50)
   description String   @db.VarChar(300)
   image       String   @db.Text
-  hit         Int   @default(0) @db.UnsignedInt
-  like        Int   @default(0) @db.UnsignedInt
-  hash_tag    String   @db.VarChar(50)
-  post_time   DateTime @default(now())
+  hit         Int      @default(0) @db.UnsignedInt
+  like        Int      @default(0) @db.UnsignedInt
+  hashtag     String   @db.VarChar(50)
+  postTime    DateTime @default(now())
   todos       Todo     @relation(fields: [todoId], references: [id])
 }
