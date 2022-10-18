@@ -9,9 +9,8 @@
 import React, { useState, useEffect } from "react";
 import axios from "axios";
 import dayjs from "dayjs";
-import Calendar from 'react-calendar';
-// eslint-disable-next-line import/no-extraneous-dependencies
-import 'react-calendar/dist/Calendar.css';
+import Calendar from "react-calendar";
+import "../calendar.css";
 
 import AddTodoListImg from "../images/Add_1.png";
 import AddTodo from "../images/Add_2.png";
@@ -20,8 +19,9 @@ import TrashImg from "../images/Trash_1.png";
 function LandingPage({ user, Logout }) {
   const [todoLists, setTodolists] = useState(["3대350", "3대400"]);
   const [inputTodo, setInput] = useState("");
-  const [value, onChange] = useState(new Date());
+  const [date, setDate] = useState(new Date());
   const [task, setTask] = useState({ id: "", content: "", datetime: "" });
+  const locale = "en-US"; // en-US, ko-KR, ja-JP, zh-CN, zh-TW
   const [taskList, setTaskList] = useState([
     {
       id: 1,
@@ -48,7 +48,7 @@ function LandingPage({ user, Logout }) {
       console.log(response);
       setTodolists(response.data.payload);
     });
-  }, [])
+  }, []);
 
   const submitHandler = () => {
     setTaskList([
@@ -64,7 +64,7 @@ function LandingPage({ user, Logout }) {
 
   useEffect(() => {
     if (inputTodo) {
-      setTask({...task, content: inputTodo});
+      setTask({ ...task, content: inputTodo });
     }
     console.log(inputTodo);
   }, [inputTodo]);
@@ -87,13 +87,11 @@ function LandingPage({ user, Logout }) {
       alert("이미 추가된 할 일입니다!");
       return;
     }
-  
+
     submitHandler();
     document.getElementById("input_task").value = "";
     setTask({ id: "", content: "", datetime: "" });
     document.getElementById("myModal").style.display = "none";
-    
-    
   }
   function deleteTodoList(id) {
     const newTodoList = taskList.filter((TASK, i) => TASK.id !== id);
@@ -103,7 +101,7 @@ function LandingPage({ user, Logout }) {
   return (
     <div>
       <nav className="bg-primary h-20 flex items-center justify-between">
-        <h1 className="font-bold text-4xl ml-[45px] text-white">
+        <h1 className="font-bold xl:text-4xl text-2xl ml-[45px] text-white">
           이젠 돌아갈 때
         </h1>
         <button
@@ -115,9 +113,9 @@ function LandingPage({ user, Logout }) {
         </button>
       </nav>
       <div className="flex flex-row">
-        <div className="flex flex-col items-center justify-start h-[91.5vh] grow-0 w-[330px]">
-          <h1 className="text-4xl font-bold mt-6">Welcome</h1>
-          <h1 className="text-4xl font-bold">{user.name}</h1>
+        <div className="flex flex-col items-center justify-center h-[91.5vh] xl:w-52 w-40">
+          <h1 className="xl:text-4xl text-2xl font-bold mt-6">Welcome</h1>
+          <h1 className="xl:text-4xl text-2xl text-4xl font-bold">{user.name}</h1>
           <div className="grow flex flex-col justify-center">
             {todoLists.map((option) => (
               <button
@@ -127,7 +125,7 @@ function LandingPage({ user, Logout }) {
                 id="todolist-btn"
               >
                 <label
-                  className="text-3xl font-bold hover:border-b-2 hover:border-slate-800 cursor-pointer"
+                  className="lg:text-3xl text-xl font-bold hover:border-b-2 hover:border-slate-800 cursor-pointer"
                   htmlFor="todolist-btn"
                 >
                   {option.goal}
@@ -138,18 +136,20 @@ function LandingPage({ user, Logout }) {
         </div>
 
         <div className="dashboard flex flex-row ml-10 bg-gray-200 w-screen">
-          <div className="relative taskList bg-white w-3/12 ml-28 rounded-2xl flex flex-col mt-8 mb-8 content-between">
+          <div className="relative taskList bg-white w-5/12 ml-14 rounded-2xl flex flex-col mt-8 mb-8 content-between">
             <nav className="bg-primary h-12 rounded-t-2xl flex items-center justify-center">
-              <h1 className="text-2xl font-bold text-white">10월11일</h1>
+              <h1 className="text-2xl font-bold text-white">
+                {dayjs(date).format("MM월 DD일")}
+              </h1>
             </nav>
-            <div className="flex flex-col justify-center">
+            <div className="flex flex-col justify-center shrink-0">
               {taskList.map((option) => (
                 <div key={option.id} className="form-check hover:bg-slate-200">
                   <input
                     className="form-check-input ml-3 appearance-none h-6 w-6 border border-gray-300 rounded-sm bg-white checked:bg-blue-600 checked:border-blue-600 focus:outline-none transition duration-200 mt-1 align-top bg-no-repeat bg-center bg-contain float-left mr-2 cursor-pointer"
                     type="checkbox"
                     value=""
-                    id="flexCheckDefault"
+                    id={option.id}
                     onClick={(e) => {
                       e.target.checked
                         ? (option.is_done = true)
@@ -157,8 +157,8 @@ function LandingPage({ user, Logout }) {
                     }}
                   />
                   <label
-                    className="form-check-label inline-block text-gray-800 text-2xl"
-                    htmlFor="flexCheckDefault"
+                    className="form-check-label inline-block text-gray-800 xl:text-2xl text-xl"
+                    htmlFor={option.id}
                   >
                     {option.content}
                   </label>
@@ -237,11 +237,19 @@ function LandingPage({ user, Logout }) {
               </div>
             </div>
           </div>
-          <div className="calandar bg-white w-6/12 ml-28 rounded-2xl mt-8 mb-8">
+          <div className="calendar bg-white w-6/12 ml-14 rounded-2xl mt-8 mb-8 mr-8">
             <nav className="bg-primary h-12 rounded-t-2xl flex items-center justify-center font-['Lato']">
-              <h1 className="text-2xl font-bold text-white">{dayjs(value).format("YYYY년 MM월 DD일")}</h1>
+              <h1 className="text-2xl font-bold text-white">
+                {dayjs(date).format("YYYY년 MM월 DD일")}
+              </h1>
             </nav>
-            <Calendar onChange={onChange} value={value} />
+            <Calendar
+              className="rounded-b-2xl border-0"
+              onChange={(Date) => setDate(Date)}
+              value={date}
+              formatDay={(locale, date) => date.getDate()} // remove '일' from day
+              formatMonth={(locale, date) => date.getMonth() + 1} // remove '월' from month
+            />
           </div>
         </div>
       </div>
