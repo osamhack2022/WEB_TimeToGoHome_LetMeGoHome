@@ -102,7 +102,7 @@ router.post("/create", async (req, res) => {
 });
 
 router.post("/update", async (req, res) => {
-  const { id: todoId, goal, is_done, is_share } = req.body;
+  const { id: todoId, goal, isDone, isShared } = req.body;
   let start, end, duration;
   if (req.body.start && req.body.end) {
     start = new Date(req.body.start);
@@ -122,8 +122,8 @@ router.post("/update", async (req, res) => {
     duration,
     start,
     end,
-    is_done,
-    is_share,
+    isDone,
+    isShared,
   };
   for (let key in data) {
     if (data[key] === undefined || data[key] === NaN) {
