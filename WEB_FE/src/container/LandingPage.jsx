@@ -6,6 +6,7 @@
 /* eslint-disable react/self-closing-comp */
 /* eslint-disable react/prop-types */
 
+
 import React, { useState, useEffect } from "react";
 import axios from "axios";
 import dayjs from "dayjs";
@@ -101,7 +102,7 @@ function LandingPage({ user, Logout }) {
   return (
     <div>
       <nav className="bg-primary h-20 flex items-center justify-between">
-        <h1 className="font-bold xl:text-4xl text-2xl ml-[45px] text-white">
+        <h1 className="font-bold xl:text-4xl md:text-2xl text-xl ml-[45px] text-white">
           이젠 돌아갈 때
         </h1>
         <button
@@ -114,8 +115,12 @@ function LandingPage({ user, Logout }) {
       </nav>
       <div className="flex flex-row">
         <div className="flex flex-col items-center justify-center h-[91.5vh] xl:w-52 w-40">
-          <h1 className="xl:text-4xl text-2xl font-bold mt-6">Welcome</h1>
-          <h1 className="xl:text-4xl text-2xl text-4xl font-bold">{user.name}</h1>
+          <h1 className="xl:text-4xl md:text-2xl text-xl font-bold mt-6">
+            Welcome
+          </h1>
+          <h1 className="xl:text-4xl md:text-2xl text-xl text-4xl font-bold">
+            {user.name}
+          </h1>
           <div className="grow flex flex-col justify-center">
             {todoLists.map((option) => (
               <button
@@ -137,8 +142,8 @@ function LandingPage({ user, Logout }) {
 
         <div className="dashboard flex flex-row ml-10 bg-gray-200 w-screen">
           <div className="relative taskList bg-white w-5/12 ml-14 rounded-2xl flex flex-col mt-8 mb-8 content-between">
-            <nav className="bg-primary h-12 rounded-t-2xl flex items-center justify-center">
-              <h1 className="text-2xl font-bold text-white">
+            <nav className="bg-primary h-[3rem] rounded-t-2xl flex items-center justify-center">
+              <h1 className="xl:text-xl md:text-lg text-base font-bold text-white font-['Arial']">
                 {dayjs(date).format("MM월 DD일")}
               </h1>
             </nav>
@@ -237,14 +242,14 @@ function LandingPage({ user, Logout }) {
               </div>
             </div>
           </div>
-          <div className="calendar bg-white w-6/12 ml-14 rounded-2xl mt-8 mb-8 mr-8">
-            <nav className="bg-primary h-12 rounded-t-2xl flex items-center justify-center font-['Lato']">
-              <h1 className="text-2xl font-bold text-white">
+          <div id="calendar" className="bg-white w-6/12 ml-14 rounded-t-2xl rounded-2xl mt-8 mb-8 mr-8">
+            {/* <nav className="bg-primary h-12 rounded-t-2xl flex items-center justify-center font-['Lato']">
+              <h1 className="xl:text-2xl md:text-xl text-lg text-white font-bold">
                 {dayjs(date).format("YYYY년 MM월 DD일")}
               </h1>
-            </nav>
+            </nav> */}
             <Calendar
-              className="rounded-b-2xl border-0"
+              className="border-0"
               onChange={(Date) => setDate(Date)}
               value={date}
               formatDay={(locale, date) => date.getDate()} // remove '일' from day
