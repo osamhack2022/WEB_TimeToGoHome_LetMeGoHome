@@ -1,14 +1,7 @@
 import express from "express";
 const router = express.Router();
+import auth from "./auth/auth.js";
 
-router.get("/hello", (req, res) => {
-  res.send("연결 완료");
-  console.log("11");
-});
-
-router.post("/login", (req, res) => {
-  console.log(req.body);
-  res.send(req.body);
-});
+router.use("/auth", auth);
 
 export default router;
