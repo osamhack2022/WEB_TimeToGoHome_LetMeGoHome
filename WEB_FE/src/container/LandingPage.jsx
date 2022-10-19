@@ -47,7 +47,7 @@ function LandingPage({ user, Logout }) {
   ]);
 
   useEffect(() => {
-    axios.get("https://petercode.kro.kr/api/todo/me").then((response) => {
+    axios.get("/api/todo/me").then((response) => {
       console.log(response);
       setTodolists(response.data.payload);
     });

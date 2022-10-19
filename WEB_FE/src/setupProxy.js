@@ -1,4 +1,5 @@
 const { createProxyMiddleware } = require("http-proxy-middleware");
+require("dotenv").config();
 
 module.exports = (app) => {
   app.use(
@@ -6,6 +7,6 @@ module.exports = (app) => {
     createProxyMiddleware({
       target: "http://localhost:5000",
       changeOrigin: true,
-})
+    })
   );
 };

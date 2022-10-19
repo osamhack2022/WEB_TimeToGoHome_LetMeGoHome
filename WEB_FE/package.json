@@ -9,6 +9,7 @@
     "autoprefixer": "^10.4.12",
     "axios": "^0.27.2",
     "dayjs": "^1.11.5",
+    "dotenv": "^16.0.3",
     "http-proxy-middleware": "^2.0.6",
     "postcss": "^8.4.17",
     "postcss-nesting": "^10.2.0",
