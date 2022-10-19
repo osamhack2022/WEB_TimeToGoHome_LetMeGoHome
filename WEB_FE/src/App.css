@@ -1,3 +1,11 @@
+@font-face {
+  font-family: "StrongAF";
+  src: url("./fonts/강한공군체/ROKAF\ Slab\ Serif\ Medium.ttf");
+}
+@font-face {
+  font-family: "StrongAFBold";
+  src: url("./fonts/강한공군체/ROKAF\ Slab\ Serif\ Bold.ttf");
+}
 body,
 html {
   position: relative;
@@ -93,7 +101,7 @@ html {
 }
 
 #login-btn-text {
-  font-family: "sans-serif";
+  font-family: "StrongAFBold";
   font-style: normal;
   font-weight: 600;
   font-size: 25px;

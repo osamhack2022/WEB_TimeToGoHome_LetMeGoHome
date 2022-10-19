@@ -2,10 +2,19 @@
 @tailwind components;
 @tailwind utilities;
 
+@font-face {
+  font-family: "StrongAF";
+  src: url("./fonts/강한공군체/ROKAF\ Slab\ Serif\ Medium.ttf");
+}
+@font-face {
+  font-family: "StrongAFBold";
+  src: url("./fonts/강한공군체/ROKAF\ Slab\ Serif\ Bold.ttf");
+}
+
 .react-calendar {
   /* max-width: 100%; */
   background: white;
-  font-family: Arial, Helvetica, sans-serif;
+  font-family: "StrongAF";
   line-height: 1.125em;
   @apply rounded-2xl;
 }
@@ -44,6 +53,7 @@
   font-weight: 800;
   color: #fff;
   font-size: 1.2em;
+  font-family: 'StrongAFBold';
   @apply xl:text-xl md:text-lg text-base rounded-t-2xl;
 }
 .react-calendar__navigation button {
@@ -62,11 +72,14 @@
 .react-calendar__month-view__weekdays {
   text-align: center;
   text-transform: uppercase;
-  font-weight: bold;
-  font-size: 0.75em;
+  font-family: 'StrongAFBold';
+  font-size: 1.1em;
 }
 .react-calendar__month-view__weekdays__weekday {
   padding: 0.5em;
+}
+.react-calendar__month-view__weekdays__weekday abbr {
+  text-decoration: none;
 }
 .react-calendar__month-view__weekNumbers .react-calendar__tile {
   display: flex;

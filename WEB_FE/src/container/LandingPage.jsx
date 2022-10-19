@@ -1,3 +1,4 @@
+/* eslint-disable no-shadow */
 /* eslint-disable import/no-extraneous-dependencies */
 /* eslint-disable no-param-reassign */
 /* eslint-disable no-unused-expressions */
@@ -13,9 +14,10 @@ import dayjs from "dayjs";
 import Calendar from "react-calendar";
 import "../calendar.css";
 
-import AddTodoListImg from "../images/Add_1.png";
+import AddTaskListImg from "../images/Add_1.png";
 import AddTodo from "../images/Add_2.png";
 import TrashImg from "../images/Trash_1.png";
+import AddListImg from "../images/AddList.png";
 
 function LandingPage({ user, Logout }) {
   const [todoLists, setTodolists] = useState(["3대350", "3대400"]);
@@ -102,7 +104,7 @@ function LandingPage({ user, Logout }) {
   return (
     <div>
       <nav className="bg-primary h-20 flex items-center justify-between">
-        <h1 className="font-bold xl:text-4xl md:text-2xl text-xl ml-[45px] text-white">
+        <h1 className="font-StrongAFBold xl:text-4xl md:text-2xl text-xl ml-[45px] text-white">
           이젠 돌아갈 때
         </h1>
         <button
@@ -110,27 +112,27 @@ function LandingPage({ user, Logout }) {
           className="order-last mr-6 border-2 p-3 rounded-md"
           onClick={Logout}
         >
-          <span className="text-white">Logout</span>
+          <span className="text-white font-StrongAF">Logout</span>
         </button>
       </nav>
       <div className="flex flex-row">
-        <div className="flex flex-col items-center justify-center h-[91.5vh] xl:w-52 w-40">
-          <h1 className="xl:text-4xl md:text-2xl text-xl font-bold mt-6">
-            Welcome
+        <div className="flex flex-col items-center justify-center h-[91.5vh] w-[17%] bg-white">
+          <h1 className="xl:text-4xl md:text-2xl text-xl font-StrongAF mt-6">
+            강력한
           </h1>
-          <h1 className="xl:text-4xl md:text-2xl text-xl text-4xl font-bold">
+          <h1 className="xl:text-4xl md:text-2xl text-xl font-StrongAF">
             {user.name}
           </h1>
-          <div className="grow flex flex-col justify-center">
+          <div className="grow flex flex-col justify-center w-full">
             {todoLists.map((option) => (
               <button
-                className="flex flex-row items-center justify-center w-[300px] h-[50px] bg-white rounded-md mt-2"
+                className="flex flex-row items-center justify-center w-full h-[50px] bg-white rounded-md mt-2"
                 key={option.id}
                 type="button"
                 id="todolist-btn"
               >
                 <label
-                  className="lg:text-3xl text-xl font-bold hover:border-b-2 hover:border-slate-800 cursor-pointer"
+                  className="lg:text-2xl md:text-xl sm:text-base text-sm font-StrongAFBold hover:border-b-2 hover:border-slate-800 cursor-pointer"
                   htmlFor="todolist-btn"
                 >
                   {option.goal}
@@ -138,16 +140,35 @@ function LandingPage({ user, Logout }) {
               </button>
             ))}
           </div>
+          <div id="addTodoListButton" className="flex flex-row content-between basis-1/6">
+            <button
+              type="button"
+              className="flex flex-row items-center justify-center w-[80%] h-[50px] bg-white rounded-md mt-2"
+              id="add-todolist-btn"
+            >
+              <img
+                src={AddListImg}
+                alt="add-todolist"
+                className="w-12 h-12 mr-2 mb-8"
+              />
+              <label
+                className="lg:text-2xl md:text-xl sm:text-base text-sm font-StrongAFBold hover:border-b-2 hover:border-slate-800 cursor-pointer"
+                htmlFor="add-todolist-btn"
+              >
+                TODOLIST 추가
+              </label>
+            </button>
+          </div>
         </div>
 
-        <div className="dashboard flex flex-row ml-10 bg-gray-200 w-screen">
+        <div className="dashboard flex flex-row bg-gray-200 w-screen">
           <div className="relative taskList bg-white w-5/12 ml-14 rounded-2xl flex flex-col mt-8 mb-8 content-between">
             <nav className="bg-primary h-[3rem] rounded-t-2xl flex items-center justify-center">
-              <h1 className="xl:text-xl md:text-lg text-base font-bold text-white font-['Arial']">
+              <h1 className="xl:text-xl md:text-lg text-base text-white font-StrongAFBold">
                 {dayjs(date).format("MM월 DD일")}
               </h1>
             </nav>
-            <div className="flex flex-col justify-center shrink-0">
+            <div id="tasklist" className="flex flex-col justify-center shrink-0 overflow-y-auto grow-0">
               {taskList.map((option) => (
                 <div key={option.id} className="form-check hover:bg-slate-200">
                   <input
@@ -162,7 +183,7 @@ function LandingPage({ user, Logout }) {
                     }}
                   />
                   <label
-                    className="form-check-label inline-block text-gray-800 xl:text-2xl text-xl"
+                    className="form-check-label inline-block text-gray-800 xl:text-2xl text-xl font-StrongAF"
                     htmlFor={option.id}
                   >
                     {option.content}
@@ -190,7 +211,7 @@ function LandingPage({ user, Logout }) {
                   document.getElementById("myModal").style.display = "block";
                 }}
               >
-                <img src={AddTodoListImg} alt="AddTodoList" />
+                <img src={AddTaskListImg} alt="AddTodoList" />
               </button>
             </div>
 
@@ -203,7 +224,7 @@ function LandingPage({ user, Logout }) {
               mb-[15%] border-0 w-5/12 h-5/12 flex flex-col rounded-2xl shadow-[0_35px_60px_-15px_rgba(0,0,0,0.3)]"
               >
                 <div className="flex flex-row items-center">
-                  <h2 className="grow font-semibold text-3xl ml-5">
+                  <h2 className="grow font-StrongAFBold text-3xl ml-5">
                     TODO-LIST 추가
                   </h2>
                   <button
@@ -217,13 +238,13 @@ function LandingPage({ user, Logout }) {
                   </button>
                 </div>
                 <div className="flex flex-col mt-12">
-                  <span className="text-xl mx-auto font-semibold font-['Inter']">
+                  <span className="text-xl mx-auto font-semibold font-StrongAF">
                     당신의 할 일을 추가하세요!
                   </span>
                   <div className="flex justify-center">
                     <input
                       id="input_task"
-                      className="w-4/6 h-12 border-2 border-gray-300 rounded-lg mt-5 p-5"
+                      className="w-4/6 h-12 border-2 border-gray-300 rounded-lg mt-5 p-5 font-StrongAF"
                       type="text"
                       placeholder="ex) 운동하기"
                       onChange={(e) => {
