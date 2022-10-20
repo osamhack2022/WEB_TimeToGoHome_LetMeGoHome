@@ -3,6 +3,7 @@ const app = express();
 let port = process.env.port || 5000;
 import bodyParser from "body-parser";
 import morgan from "morgan";
+import cors from "cors";
 
 import swaggerJsdoc from "swagger-jsdoc";
 import swaggerUi from "swagger-ui-express";
@@ -11,6 +12,15 @@ const specs = swaggerJsdoc(swaggerOptions);
 
 import apiRouter from "./routes/api.js";
 
+app.use(
+  cors({
+    origin:
+      process.env.NODE_ENV === "production"
+        ? "https://timetogohome.kro.kr"
+        : "*",
+    credentials: false,
+  })
+);
 app.use(bodyParser.urlencoded({ extended: true }));
 app.use(bodyParser.json());
 app.use(morgan(process.env.NODE_ENV === "production" ? "combined" : "dev"));
