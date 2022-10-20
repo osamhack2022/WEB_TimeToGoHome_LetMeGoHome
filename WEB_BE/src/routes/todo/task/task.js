@@ -8,7 +8,7 @@ const DAY = 1000 * 60 * 60 * 24;
 router.get("/", async (req, res) => {
   try {
     const { todoId, date } = req.query;
-    const task = await prisma.task.findMany({
+    const tasks = await prisma.task.findMany({
       where: {
         todoId,
         datetime: {
@@ -19,7 +19,7 @@ router.get("/", async (req, res) => {
     });
     return res.json({
       code: 200,
-      payload: task,
+      payload: tasks,
     });
   } catch (error) {
     console.error(error);
