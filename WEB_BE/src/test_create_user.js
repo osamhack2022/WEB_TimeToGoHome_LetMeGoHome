@@ -4,13 +4,14 @@ const prisma = new PrismaClient();
 
 const user = await prisma.User.create({
   data: {
-    name: "David",
-    email: "David@prisma.io",
-    password: "5678",
-    army_type: "육군",
-    army_rank: "일병",
-    enlistment_date: new Date("2022-10-07"),
-    discharge_date: new Date("2024-05-21"),
+    name: "김공군",
+    email: "kim.af@naver.com",
+    password: "test1234",
+    image: "https://put_image_url.here",
+    armyType: "공군",
+    armyRank: "상병",
+    enlistment: new Date("2022-01-10"),
+    discharge: new Date("2023-10-09"),
   },
 });
 

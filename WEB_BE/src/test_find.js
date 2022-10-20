@@ -2,10 +2,23 @@ import { PrismaClient } from "@prisma/client";
 
 const prisma = new PrismaClient();
 
-const todo = await prisma.todolist.findMany({
+const user = await prisma.user.findUnique({
   where: {
-    userId: 1n,
+    email: "kim.af@naver.com",
   },
 });
+console.log(user);
 
-console.log(todo[0]);
+const todo = await prisma.todo.findUnique({
+  where: {
+    id: 1,
+  },
+});
+console.log(todo);
+
+const task = await prisma.task.findMany({
+  where: {
+    todoId: 1,
+  },
+});
+console.log(task);
