@@ -273,4 +273,82 @@ router.post("/clone", async (req, res) => {
   }
 });
 
+router.post("/share", async (req, res) => {
+  try {
+    const { id: todoId, title, desc, hashtag } = req.body;
+    const image = "TODO: image 불러오기";
+    try {
+      const todo = await prisma.todo.findUnique({
+        where: {
+          id: todoId,
+        },
+      });
+      if (!todo) {
+        return res.status(404).json({
+          code: 404,
+          message: "원본 ToDoList를 찾을 수 없습니다.",
+        });
+      }
+    } catch (error) {
+      console.error(error);
+      if (error instanceof Prisma.PrismaClientValidationError) {
+        return res.status(400).json({
+          code: 400,
+          message: "ToDoList를 공유할 수 없습니다.",
+        });
+      }
+      return res.status(500).json({
+        code: 500,
+        message: "Error",
+      });
+    }
+    const share = await prisma.share.create({
+      data: {
+        todoId,
+        title,
+        description: desc,
+        image: "https://image_url_here.com", // TODO: image 서버 연결 후 수정할 것
+        hashtag,
+      },
+    });
+    const todo = await prisma.todo.update({
+      where: {
+        id: todoId,
+      },
+      data: {
+        isDone: true,
+        isShared: true,
+      },
+    });
+    return res.json({
+      code: 201,
+      payload: {
+        todo,
+        share,
+      },
+    });
+  } catch (error) {
+    console.error(error);
+    if (
+      error instanceof Prisma.PrismaClientKnownRequestError &&
+      error.code === "P2002"
+    ) {
+      return res.status(400).json({
+        code: 400,
+        message: "이미 공유된 ToDoList입니다.",
+      });
+    }
+    if (error instanceof Prisma.PrismaClientValidationError) {
+      return res.status(400).json({
+        code: 400,
+        message: "ToDoList를 공유할 수 없습니다.",
+      });
+    }
+    return res.status(500).json({
+      code: 500,
+      message: "Error",
+    });
+  }
+});
+
 export default router;
