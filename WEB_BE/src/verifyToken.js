@@ -1,17 +1,9 @@
 import jwt from "jsonwebtoken";
 
-export const verifyToken = async (token, res) => {
-  if (!token) {
-    return res.json({
-      success: false,
-      message: "not logged in",
-    });
-  }
+export const verifyToken = (req, res, next) => {
   try {
-    const decoded = jwt.verify(token, process.env.JWT_SECRET);
-    if (decoded) {
-      return decoded.id;
-    }
+    req.decoded = jwt.verify(req.headers["x-access-token"], process.env.JWT_SECRET);
+    return next();
   } catch (error) {
     if (error.name === "TokenExpiredError") {
       // 유효기간 초과

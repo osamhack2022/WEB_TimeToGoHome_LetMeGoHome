@@ -6,19 +6,15 @@ import { verifyToken } from "../../verifyToken.js";
 const prisma = new PrismaClient();
 const router = express.Router();
 
-router.get("/me", async (req, res) => {
-  const token = req.headers["x-access-token"];
-  const id = await verifyToken(token, res);
+router.get("/me", verifyToken, async (req, res) => {
   const data = await prisma.user.findFirst({
-    where: { id: id },
+    where: { id: req.decoded.id },
   });
   res.status(200).json({ data });
 });
 
 // 유저 정보 수정
-router.post("/update", async (req, res) => {
-  const token = req.headers["x-access-token"];
-  const id = await verifyToken(token, res);
+router.post("/update", verifyToken, async (req, res) => {
   try {
     const { name, email, password, image } = req.body;
     let data = {
@@ -45,7 +41,7 @@ router.post("/update", async (req, res) => {
     }
     const user = await prisma.user.update({
       where: {
-        id: id,
+        id: req.decoded.id,
       },
       data,
     });
@@ -68,13 +64,11 @@ router.post("/update", async (req, res) => {
   }
 });
 
-router.get("/delete", async (req, res) => {
-  const token = req.headers["x-access-token"];
-  const id = await verifyToken(token, res);
+router.get("/delete", verifyToken, async (req, res) => {
   try {
     const User = await prisma.task.delete({
       where: {
-        id: id,
+        id: req.decoded.id,
       },
     });
     return res.status(200).json({
