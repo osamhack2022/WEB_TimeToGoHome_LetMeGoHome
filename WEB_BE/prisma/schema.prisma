@@ -8,43 +8,32 @@ datasource db {
 }
 
 model User {
-  id          Int        @id @default(autoincrement()) @db.UnsignedInt
-  name        String     @db.VarChar(10) @unique
-  email       String     @db.VarChar(64) @unique
-  password    String     @db.Char(60)
-  image       String?    @db.Text
-  armyType    String     @db.Char(10)
-  armyRank    String     @db.Char(10)
-  enlistment  DateTime   @db.Date
-  discharge   DateTime   @db.Date
-  todos       Todo[]
+  id         Int      @id @default(autoincrement()) @db.UnsignedInt
+  name       String   @unique @db.VarChar(10)
+  email      String   @unique @db.VarChar(64)
+  password   String   @db.Char(60)
+  enlistment DateTime @db.Date
+  discharge  DateTime @db.Date
+  armyRank   String   @db.Char(10)
+  armyType   String   @db.Char(10)
+  image      String?  @db.Text
+  Todo       Todo[]
 }
 
 model Todo {
-  id         Int         @id @default(autoincrement()) @db.UnsignedInt
-  userId     Int         @db.UnsignedInt
-  goal       String      @db.VarChar(50)
-  duration   Int
-  start      DateTime    @db.Date
-  end        DateTime    @db.Date
-  isDone     Boolean     @default(false)
-  isShared   Boolean     @default(false)
-  user       User        @relation(fields: [userId], references: [id])
-  share      Share?
-  tasks      Task[]
+  id       Int      @id @default(autoincrement()) @db.UnsignedInt
+  userId   Int      @db.UnsignedInt
+  goal     String   @db.VarChar(50)
+  duration Int
+  start    DateTime @db.Date
+  end      DateTime @db.Date
+  isDone   Boolean  @default(false)
+  isShared Boolean  @default(false)
+  User     User     @relation(fields: [userId], references: [id])
+  Share    Share?
+  Task     Task[]
 
   @@index([userId], map: "Todo_userId_fkey")
-}
-
-model Task {
-  id         Int      @id @default(autoincrement()) @db.UnsignedInt
-  todoId     Int      @db.UnsignedInt
-  content    String   @db.VarChar(50)
-  datetime   DateTime
-  isDone     Boolean  @default(false)
-  todo       Todo     @relation(fields: [todoId], references: [id])
-
-  @@index([todoId], map: "Todo_todoId_fkey")
 }
 
 model Share {
@@ -57,5 +46,16 @@ model Share {
   like        Int      @default(0) @db.UnsignedInt
   hashtag     String   @db.VarChar(50)
   postTime    DateTime @default(now())
-  todos       Todo     @relation(fields: [todoId], references: [id])
+  Todo        Todo     @relation(fields: [todoId], references: [id])
+}
+
+model Task {
+  id       Int      @id @default(autoincrement()) @db.UnsignedInt
+  todoId   Int      @db.UnsignedInt
+  content  String   @db.VarChar(50)
+  datetime DateTime
+  isDone   Boolean  @default(false)
+  Todo     Todo     @relation(fields: [todoId], references: [id])
+
+  @@index([todoId], map: "Todo_todoId_fkey")
 }
