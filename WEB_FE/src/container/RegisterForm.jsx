@@ -77,42 +77,7 @@ function RegisterForm() {
               onClick={switchImage}
             />
           </div>
-
-          {/* <div className="dropdown form-group-register mt-36 group" data-dropdown>
-            <button className="link flex text-grey hover:text-slate-500 focus:text-slate-800 w-full text-left ml-3 peer" type="button" data-dropdown-button onClick={handleDropdown}>육군</button>
-            <div className="dropdown-menu absolute left-0 top-full bg-white p-[.75rem] shadow-bx opacity-0 peer-focus:opacity-100 
-            transition-[opacity,transform] ease-in-out duration-150 -translate-y-[10px] peer-focus:translate-y-0 pointer-events-none peer-focus:pointer-events-auto">
-              <div>육군</div>
-              <div>해군</div>
-              <div>공군</div>
-            </div>
-          </div> */}
-          {/* <div className = "absolute w-[500px] h-[35px] left-[178px] top-[30vh] mt-36">
-            <div className="dropdown absolute w-2/5 h-0 left-0 top-0">
-              <div className="select">
-                <span className="selected">육군</span>
-                <div className="caret"></div>
-              </div>
-              <ul className="menu">
-                <li className="active">육군</li>
-                <li>해군</li>
-                <li>공군</li>
-              </ul>
-            </div>
-            
-            <div className="dropdown absolute w-2/5 h-0 left-1/2 top-0 box-border">
-              <div className="select bg-[#e2e8f0]">
-                <span className="selected">이병</span>
-                <div className="caret"></div>
-              </div>
-              <ul className="menu">
-                <li className="active">이병</li>
-                <li>일병</li>
-                <li>상병</li>
-                <li>병장</li>
-              </ul>
-            </div>
-          </div> */}
+          
           <div className="dropdown relative flex flex-row form-group-register mt-36 group w-[400px] select-none cursor-pointer">
             <div
               id="military"
