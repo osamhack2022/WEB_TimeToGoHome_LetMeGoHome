@@ -79,45 +79,4 @@ router.post("/register", async (req, res) => {
   }
 });
 
-//token 검증
-router.get("/check", async (req, res) => {
-  const token = req.headers["x-access-token"] || req.query.token;
-  if (!token) {
-    return res.status(403).json({
-      success: false,
-      message: "not logged in",
-    });
-  }
-  try {
-    const decoded = jwt.verify(token, process.env.JWT_SECRET);
-    if (decoded) {
-      const data = await prisma.user.findFirst({
-        where: { id: decoded.id },
-      });
-      if (!data || data.status === "DELETED") {
-        return res.status(403).json({
-          success: false,
-          message: "not logged in",
-        });
-      }
-      return res.status(200).json({
-        success: true,
-        info: data,
-      });
-    }
-  } catch (error) {
-    if (error.name === "TokenExpiredError") {
-      // 유효기간 초과
-      return res.status(419).json({
-        success: false,
-        message: "token expired",
-      });
-    }
-    return res.status(401).json({
-      success: false,
-      message: "invalid token",
-    });
-  }
-});
-
 export default router;
