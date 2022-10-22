@@ -21,32 +21,60 @@ import EditBtnImg from "../images/Edit_fill.png";
 import CheckBtnImg from "../images/Verified.png";
 
 function LandingPage({ user, Logout }) {
-  const [todoLists, setTodolists] = useState(["3대350", "3대400"]);
+  const [todoLists, setTodolists] = useState([
+    {
+      id: 350,
+      user_id: 1234123421341324,
+      goal: "3대350",
+      duration: 3,
+      start: "2021-08-01",
+      end: "2021-08-10",
+      is_done: false,
+      is_shared: false,
+    },
+    {
+      id: 500,
+      user_id: 1234123421341324,
+      goal: "3대500",
+      duration: 4,
+      start: "2021-09-01",
+      end: "2021-09-10",
+      is_done: false,
+      is_shared: false,
+    },
+  ]);
+  const [currentList, setCurrentList] = useState(todoLists[0]);
   const [inputTodo, setInput] = useState("");
   const [editTodo, setEdit] = useState("");
-  const [date, setDate] = useState(new Date());
-  const [task, setTask] = useState({ id: "", content: "", datetime: "" });
-  const locale = "en-US"; // en-US, ko-KR, ja-JP, zh-CN, zh-TW
-  const [taskList, setTaskList] = useState([
+  const [time, setTime] = useState("");
+  const [date, setDate] = useState(new Date()); // 날짜 for calendar
+  const [task, setTask] = useState({ id: "", content: "", datetime: "" }); // calendar에서 선택한 날짜의 task들을 저장하는 state
+  // const locale = "en-US"; // en-US, ko-KR, ja-JP, zh-CN, zh-TW
+  const dummyTasklist = [
     {
       id: 1,
+      todo_id: 350,
       content: "덤벨 프레스 5set",
       datetime: "2021-08-01 12:00",
       is_done: false,
     },
     {
       id: 2,
+      todo_id: 350,
       content: "벤치 프레스 12set",
       datetime: "2021-08-01 13:00",
       is_done: false,
     },
     {
       id: 3,
+      todo_id: 350,
       content: "덤벨 플라이 5set",
       datetime: "2021-08-01 14:00",
       is_done: false,
     },
-  ]);
+  ];
+
+  const [taskList, setTaskList] = useState(dummyTasklist); // calendar에서 선택한 날짜의 task들을 저장하는 state
 
   useEffect(() => {
     axios.get("/api/todo/me").then((response) => {
@@ -69,10 +97,13 @@ function LandingPage({ user, Logout }) {
 
   useEffect(() => {
     if (inputTodo) {
-      setTask({ ...task, content: inputTodo });
+      setTask({
+        ...task,
+        content: inputTodo,
+        datetime: `${dayjs(date).format("YYYY-MM-DD")} ${time}`,
+      });
     }
-    console.log(inputTodo);
-  }, [inputTodo]);
+  }, [inputTodo, time]);
 
   function handleAddTask(e) {
     e.preventDefault();
@@ -95,15 +126,20 @@ function LandingPage({ user, Logout }) {
     submitHandler();
     document.getElementById("input_task").value = "";
     setTask({ id: "", content: "", datetime: "" });
+    setTime("");
     document.getElementById("inputTaskModal").style.display = "none";
+    document.getElementById("input_time").value = "";
   }
 
   useEffect(() => {
     if (editTodo) {
-      setTask({ ...task, content: editTodo });
+      setTask({
+        ...task,
+        content: editTodo,
+        datetime: `${dayjs(date).format("YYYY-MM-DD")} ${time}`,
+      });
     }
-    console.log(task.content);
-  }, [editTodo]);
+  }, [editTodo, time]);
 
   function handleEditTask(e) {
     e.preventDefault();
@@ -115,7 +151,8 @@ function LandingPage({ user, Logout }) {
     const isTodoInList = taskList.some(
       (taskItem) =>
         taskItem.content.toLowerCase().replace(/\s/g, "") ===
-        task.content.toLowerCase().replace(/\s/g, "")
+          task.content.toLowerCase().replace(/\s/g, "") &&
+        taskItem.datetime === task.datetime
     );
     if (isTodoInList) {
       // eslint-disable-next-line no-alert
@@ -124,13 +161,13 @@ function LandingPage({ user, Logout }) {
     }
     const newTaskList = taskList.map((taskItem) => {
       if (taskItem.id === task.id) {
-        taskItem = task;
+        taskItem.content = task.content;
+        taskItem.datetime = task.datetime;
       }
       return taskItem;
     });
     setTaskList(newTaskList);
 
-    // setTask(...task, { content: editTodo });
     document.getElementById("editTaskModal").style.display = "none";
   }
 
@@ -232,36 +269,47 @@ function LandingPage({ user, Logout }) {
                   >
                     {option.content}
                   </label>
-
-                  <button
-                    type="button"
-                    className="float-right mr-3 mt-1"
-                    onClick={() => deleteTask(option.id)}
-                  >
-                    <img
-                      src={TrashImg}
-                      alt="trash"
-                      className="w-6 h-6 mt-auto"
-                    />
-                  </button>
-                  <button
-                    type="button"
-                    className="float-right mr-3 mt-1"
-                    onClick={() => {
-                      document.getElementById("editTaskModal").style.display =
-                        "block";
-                      setTask(option);
-                      setEdit(option.content);
-                      document.getElementById("input_task_edit").value =
-                        option.content;
-                    }}
-                  >
-                    <img
-                      src={EditBtnImg}
-                      alt="trash"
-                      className="w-6 h-6 mt-auto"
-                    />
-                  </button>
+                  <div className="ml-3 peer-checked:text-gray-400">
+                    <label className="font-StrongAF" htmlFor={option.id}>
+                      {option.datetime}
+                    </label>
+                    <button
+                      type="button"
+                      className="float-right mr-3"
+                      onClick={() => deleteTask(option.id)}
+                    >
+                      <img
+                        src={TrashImg}
+                        alt="trash"
+                        className="w-6 h-6 mt-auto"
+                      />
+                    </button>
+                    <button
+                      type="button"
+                      className="float-right mr-3"
+                      onClick={() => {
+                        document.getElementById("editTaskModal").style.display =
+                          "block";
+                        setTask({
+                          ...task,
+                          id: option.id,
+                          content: option.content,
+                          datetime: option.datetime,
+                        });
+                        setEdit(option.content);
+                        document.getElementById("input_task_edit").value =
+                          option.content;
+                        document.getElementById("edit_time").value =
+                          option.datetime.slice(11);
+                      }}
+                    >
+                      <img
+                        src={EditBtnImg}
+                        alt="trash"
+                        className="w-6 h-6 mt-auto"
+                      />
+                    </button>
+                  </div>
                 </div>
               ))}
             </div>
@@ -317,6 +365,23 @@ function LandingPage({ user, Logout }) {
                       }}
                     />
                   </div>
+                  <div className="flex justify-center">
+                    <input
+                      id="input_time"
+                      className="w-4/6 h-12 border-2 border-gray-300 rounded-lg mt-5 p-5 font-StrongAF"
+                      type="text"
+                      placeholder="시간을 정해주세요!"
+                      onChange={(e) => {
+                        setTime(e.target.value);
+                      }}
+                      onFocus={(e) => {
+                        e.target.type = "time";
+                      }}
+                      onBlur={(e) => {
+                        e.target.type = "text";
+                      }}
+                    />
+                  </div>
                   <button
                     id="addTodoBtn"
                     type="button"
@@ -363,6 +428,24 @@ function LandingPage({ user, Logout }) {
                       placeholder="ex) 운동하기"
                       onChange={(e) => {
                         setEdit(e.target.value);
+                      }}
+                    />
+                  </div>
+                  <div className="flex justify-center">
+                    <input
+                      id="edit_time"
+                      className="w-4/6 h-12 border-2 border-gray-300 rounded-lg mt-5 p-5 font-StrongAF"
+                      type="text"
+                      placeholder="시간을 정해주세요!"
+                      onChange={(e) => {
+                        setTime(e.target.value);
+                        console.log("Edit_time:", time);
+                      }}
+                      onFocus={(e) => {
+                        e.target.type = "time";
+                      }}
+                      onBlur={(e) => {
+                        e.target.type = "text";
                       }}
                     />
                   </div>
