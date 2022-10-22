@@ -113,7 +113,7 @@ function RegisterForm() {
               </ul>
             </div>
           </div> */}
-          <div className="dropdown relative flex form-group-register mt-36 group w-[400px] m-0 m-auto select-none cursor-pointer">
+          <div className="dropdown relative flex flex-row form-group-register mt-36 group w-[400px] select-none cursor-pointer">
             <div
               id="military"
               className="dropdown-btn rounded-md absolute w-2/5 flex justify-between p-[10px] bg-[#fff] shadow-[3px_3px_10px_6px_rgba(0,0,0,0.06)] items-center"

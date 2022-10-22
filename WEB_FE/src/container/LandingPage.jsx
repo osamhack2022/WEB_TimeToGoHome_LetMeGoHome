@@ -7,7 +7,6 @@
 /* eslint-disable react/self-closing-comp */
 /* eslint-disable react/prop-types */
 
-
 import React, { useState, useEffect } from "react";
 import axios from "axios";
 import dayjs from "dayjs";
@@ -18,10 +17,13 @@ import AddTaskListImg from "../images/Add_1.png";
 import AddTodo from "../images/Add_2.png";
 import TrashImg from "../images/Trash_1.png";
 import AddListImg from "../images/AddList.png";
+import EditBtnImg from "../images/Edit_fill.png";
+import CheckBtnImg from "../images/Verified.png";
 
 function LandingPage({ user, Logout }) {
   const [todoLists, setTodolists] = useState(["3대350", "3대400"]);
   const [inputTodo, setInput] = useState("");
+  const [editTodo, setEdit] = useState("");
   const [date, setDate] = useState(new Date());
   const [task, setTask] = useState({ id: "", content: "", datetime: "" });
   const locale = "en-US"; // en-US, ko-KR, ja-JP, zh-CN, zh-TW
@@ -75,7 +77,7 @@ function LandingPage({ user, Logout }) {
   function handleAddTask(e) {
     e.preventDefault();
 
-    if (!task.content) {
+    if (!task.content || !inputTodo) {
       // eslint-disable-next-line no-alert
       alert("할 일을 입력해주세요!");
       return;
@@ -90,13 +92,49 @@ function LandingPage({ user, Logout }) {
       alert("이미 추가된 할 일입니다!");
       return;
     }
-
     submitHandler();
     document.getElementById("input_task").value = "";
     setTask({ id: "", content: "", datetime: "" });
-    document.getElementById("myModal").style.display = "none";
+    document.getElementById("inputTaskModal").style.display = "none";
   }
-  function deleteTodoList(id) {
+
+  useEffect(() => {
+    if (editTodo) {
+      setTask({ ...task, content: editTodo });
+    }
+    console.log(task.content);
+  }, [editTodo]);
+
+  function handleEditTask(e) {
+    e.preventDefault();
+    if (!editTodo) {
+      // eslint-disable-next-line no-alert
+      alert("수정 할 일을 입력해주세요!");
+      return;
+    }
+    const isTodoInList = taskList.some(
+      (taskItem) =>
+        taskItem.content.toLowerCase().replace(/\s/g, "") ===
+        task.content.toLowerCase().replace(/\s/g, "")
+    );
+    if (isTodoInList) {
+      // eslint-disable-next-line no-alert
+      alert("이미 추가된 할 일입니다!");
+      return;
+    }
+    const newTaskList = taskList.map((taskItem) => {
+      if (taskItem.id === task.id) {
+        taskItem = task;
+      }
+      return taskItem;
+    });
+    setTaskList(newTaskList);
+
+    // setTask(...task, { content: editTodo });
+    document.getElementById("editTaskModal").style.display = "none";
+  }
+
+  function deleteTask(id) {
     const newTodoList = taskList.filter((TASK, i) => TASK.id !== id);
     setTaskList(newTodoList);
   }
@@ -140,7 +178,10 @@ function LandingPage({ user, Logout }) {
               </button>
             ))}
           </div>
-          <div id="addTodoListButton" className="flex flex-row content-between basis-1/6">
+          <div
+            id="addTodoListButton"
+            className="flex flex-row content-between basis-1/6"
+          >
             <button
               type="button"
               className="flex flex-row items-center justify-center w-[80%] h-[50px] bg-white rounded-md mt-2"
@@ -168,11 +209,14 @@ function LandingPage({ user, Logout }) {
                 {dayjs(date).format("MM월 DD일")}
               </h1>
             </nav>
-            <div id="tasklist" className="flex flex-col justify-center shrink-0 overflow-y-auto grow-0">
+            <div
+              id="tasklist"
+              className="flex flex-col justify-center shrink-0 overflow-y-auto grow-0"
+            >
               {taskList.map((option) => (
                 <div key={option.id} className="form-check hover:bg-slate-200">
                   <input
-                    className="form-check-input ml-3 appearance-none h-6 w-6 border border-gray-300 rounded-sm bg-white checked:bg-blue-600 checked:border-blue-600 focus:outline-none transition duration-200 mt-1 align-top bg-no-repeat bg-center bg-contain float-left mr-2 cursor-pointer"
+                    className="form-check-input peer ml-3 h-6 w-6 border border-gray-300 rounded-sm focus:outline-none transition duration-200 mt-1 align-top bg-no-repeat bg-center bg-contain float-left mr-2 cursor-pointer"
                     type="checkbox"
                     value=""
                     id={option.id}
@@ -183,18 +227,37 @@ function LandingPage({ user, Logout }) {
                     }}
                   />
                   <label
-                    className="form-check-label inline-block text-gray-800 xl:text-2xl text-xl font-StrongAF"
+                    className="form-check-label inline-block text-gray-800 xl:text-2xl text-xl font-StrongAF peer-checked:line-through peer-checked:text-gray-400"
                     htmlFor={option.id}
                   >
                     {option.content}
                   </label>
+
                   <button
                     type="button"
                     className="float-right mr-3 mt-1"
-                    onClick={() => deleteTodoList(option.id)}
+                    onClick={() => deleteTask(option.id)}
                   >
                     <img
                       src={TrashImg}
+                      alt="trash"
+                      className="w-6 h-6 mt-auto"
+                    />
+                  </button>
+                  <button
+                    type="button"
+                    className="float-right mr-3 mt-1"
+                    onClick={() => {
+                      document.getElementById("editTaskModal").style.display =
+                        "block";
+                      setTask(option);
+                      setEdit(option.content);
+                      document.getElementById("input_task_edit").value =
+                        option.content;
+                    }}
+                  >
+                    <img
+                      src={EditBtnImg}
                       alt="trash"
                       className="w-6 h-6 mt-auto"
                     />
@@ -208,7 +271,8 @@ function LandingPage({ user, Logout }) {
                 type="button"
                 className=""
                 onClick={(e) => {
-                  document.getElementById("myModal").style.display = "block";
+                  document.getElementById("inputTaskModal").style.display =
+                    "block";
                 }}
               >
                 <img src={AddTaskListImg} alt="AddTodoList" />
@@ -216,7 +280,7 @@ function LandingPage({ user, Logout }) {
             </div>
 
             <div
-              id="myModal"
+              id="inputTaskModal"
               className="modal bg-gray-700/30 hidden h-full overflow-auto fixed top-0 left-0 w-full z-10"
             >
               <div
@@ -225,13 +289,14 @@ function LandingPage({ user, Logout }) {
               >
                 <div className="flex flex-row items-center">
                   <h2 className="grow font-StrongAFBold text-3xl ml-5">
-                    TODO-LIST 추가
+                    TODO 추가
                   </h2>
                   <button
                     className="order-last"
                     type="button"
                     onClick={(e) => {
-                      document.getElementById("myModal").style.display = "none";
+                      document.getElementById("inputTaskModal").style.display =
+                        "none";
                     }}
                   >
                     <span className="close">&times;</span>
@@ -253,6 +318,7 @@ function LandingPage({ user, Logout }) {
                     />
                   </div>
                   <button
+                    id="addTodoBtn"
                     type="button"
                     className="mx-auto w-[60px] h-[60px] mt-16"
                     onClick={handleAddTask}
@@ -262,13 +328,65 @@ function LandingPage({ user, Logout }) {
                 </div>
               </div>
             </div>
+            <div
+              id="editTaskModal"
+              className="modal bg-gray-700/30 hidden h-full overflow-auto fixed top-0 left-0 w-full z-10"
+            >
+              <div
+                className="modal-content bg-white border-solid mx-auto p-5 mt-[10%] 
+              mb-[15%] border-0 w-5/12 h-5/12 flex flex-col rounded-2xl shadow-[0_35px_60px_-15px_rgba(0,0,0,0.3)]"
+              >
+                <div className="flex flex-row items-center">
+                  <h2 className="grow font-StrongAFBold text-3xl ml-5">
+                    TODO 수정
+                  </h2>
+                  <button
+                    className="order-last"
+                    type="button"
+                    onClick={(e) => {
+                      document.getElementById("editTaskModal").style.display =
+                        "none";
+                    }}
+                  >
+                    <span className="close">&times;</span>
+                  </button>
+                </div>
+                <div className="flex flex-col mt-12">
+                  <span className="text-xl mx-auto font-semibold font-StrongAF">
+                    당신의 할 일을 수정하세요!
+                  </span>
+                  <div className="flex justify-center">
+                    <input
+                      id="input_task_edit"
+                      className="w-4/6 h-12 border-2 border-gray-300 rounded-lg mt-5 p-5 font-StrongAF"
+                      type="text"
+                      placeholder="ex) 운동하기"
+                      onChange={(e) => {
+                        setEdit(e.target.value);
+                      }}
+                    />
+                  </div>
+                  <button
+                    id="editTodoBtn"
+                    type="button"
+                    className="mx-auto mt-16"
+                    onClick={handleEditTask}
+                  >
+                    <img
+                      src={CheckBtnImg}
+                      className="w-[35px] h-[35px]"
+                      alt="Addtask"
+                    />
+                  </button>
+                </div>
+              </div>
+            </div>
           </div>
-          <div id="calendar" className="bg-white w-6/12 ml-14 rounded-t-2xl rounded-2xl mt-8 mb-8 mr-8">
-            {/* <nav className="bg-primary h-12 rounded-t-2xl flex items-center justify-center font-['Lato']">
-              <h1 className="xl:text-2xl md:text-xl text-lg text-white font-bold">
-                {dayjs(date).format("YYYY년 MM월 DD일")}
-              </h1>
-            </nav> */}
+
+          <div
+            id="calendar"
+            className="bg-white w-6/12 ml-14 rounded-t-2xl rounded-2xl mt-8 mb-8 mr-8"
+          >
             <Calendar
               className="border-0"
               onChange={(Date) => setDate(Date)}
