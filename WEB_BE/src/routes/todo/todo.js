@@ -3,12 +3,13 @@ const router = express.Router();
 import { Prisma, PrismaClient } from "@prisma/client";
 const prisma = new PrismaClient();
 import taskRouter from "./task/task.js";
+import { verifyToken } from "../../verifyToken.js";
 
 const DAY = 1000 * 60 * 60 * 24;
 
 router.use("/task", taskRouter);
 
-router.get("/", async (req, res) => {
+router.get("/",verifyToken, async (req, res) => {
   try {
     const todoId = Number(req.query.id);
     const todo = await prisma.todo.findUnique({
@@ -35,7 +36,7 @@ router.get("/", async (req, res) => {
   }
 });
 
-router.get("/me", async (req, res) => {
+router.get("/me",verifyToken, async (req, res) => {
   try {
     const todos = await prisma.todo.findMany({
       where: {
@@ -61,7 +62,7 @@ router.get("/me", async (req, res) => {
   }
 });
 
-router.post("/create", async (req, res) => {
+router.post("/create",verifyToken, async (req, res) => {
   try {
     const { goal } = req.body;
     let start, end, duration;
@@ -105,7 +106,7 @@ router.post("/create", async (req, res) => {
   }
 });
 
-router.post("/update", async (req, res) => {
+router.post("/update",verifyToken, async (req, res) => {
   try {
     const { id: todoId, goal, isDone, isShared } = req.body;
     let start, end, duration;
@@ -159,7 +160,7 @@ router.post("/update", async (req, res) => {
   }
 });
 
-router.post("/delete", async (req, res) => {
+router.post("/delete",verifyToken, async (req, res) => {
   try {
     const { id: todoId } = req.body;
     const todo = await prisma.todo.delete({
@@ -189,7 +190,7 @@ router.post("/delete", async (req, res) => {
   }
 });
 
-router.post("/clone", async (req, res) => {
+router.post("/clone",verifyToken, async (req, res) => {
   try {
     const { id: todoId } = req.body;
     let start, end, duration, day_diff;
@@ -273,7 +274,7 @@ router.post("/clone", async (req, res) => {
   }
 });
 
-router.post("/share", async (req, res) => {
+router.post("/share",verifyToken, async (req, res) => {
   try {
     const { id: todoId, title, desc, hashtag } = req.body;
     const image = "TODO: image 불러오기";
