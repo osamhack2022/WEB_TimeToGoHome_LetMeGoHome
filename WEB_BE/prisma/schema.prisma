@@ -39,6 +39,7 @@ model Todo {
 model Share {
   id          Int      @id @default(autoincrement()) @db.UnsignedInt
   todoId      Int      @unique @db.UnsignedInt
+  writerId    Int      @db.UnsignedInt
   title       String   @db.VarChar(50)
   description String   @db.VarChar(300)
   image       String   @db.Text
