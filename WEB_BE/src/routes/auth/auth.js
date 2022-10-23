@@ -7,34 +7,35 @@ const prisma = new PrismaClient();
 const router = express.Router();
 
 router.post("/login", async (req, res) => {
+  const { email, password } = req.body;
   const data = await prisma.user.findFirst({
     // email 찾기
-    where: { email: req.body.email },
+    where: { email },
   });
   if (!data || data.status === "DELETED") {
     // 만약 존재하지 않거나 DELETED 상태면 error
-    res.status(400).json({ message: "invalid email" });
+    return res.status(400).json({
+      code: 400,
+      message: "이메일 혹은 비밀번호가 일치하지 않습니다.",
+    });
   }
   // 존재하면 비밀번호 확인
-
-  const result = await bcrypt.compare(req.body.password, data.password);
+  const result = await bcrypt.compare(password, data.password);
   if (!result) {
     // 비밀번호가 틀리면 error
-    res.status(400).json({ message: "invalid password" });
+    return res.status(400).json({
+      code: 400,
+      message: "이메일 혹은 비밀번호가 일치하지 않습니다.",
+    });
   }
-  const token = jwt.sign(
-    {
-      id: data.id,
-    },
-    process.env.JWT_SECRET,
-    {
-      expiresIn: "7d",
-    }
-  );
+  const token = jwt.sign({ id: data.id }, process.env.JWT_SECRET, {
+    expiresIn: "30m",
+  });
   // 비밀번호가 맞으면 로그인 및 토큰 발급
-  res.status(200).json({
-    token,
-    message: "login success",
+  return res.status(200).json({
+    code: 200,
+    payload: { token },
+    message: "로그인 되었습니다.",
   });
 });
 
@@ -56,10 +57,13 @@ router.post("/register", async (req, res) => {
         image: "https://i.imgur.com/3ZQ3Z0x.png", // sample image
       },
     });
-    res.status(200).json({ data });
+    delete data["password"];
+    return res
+      .status(200)
+      .json({ code: 200, payload: data, message: "회원가입되었습니다." });
   } catch (error) {
     if (error instanceof Prisma.PrismaClientKnownRequestError) {
-      // The .code property can be accessed in a type-safe manner
+      console.error(error);
       if (error.code === "P2002") {
         const email = await prisma.user.findFirst({
           // email 찾기
@@ -68,12 +72,18 @@ router.post("/register", async (req, res) => {
 
         if (!email || email.status === "DELETED") {
           // 만약 존재하지 않거나 DELETED 상태면 패스
-          res.status(400).json({ message: "중복되는 ID 입니다." });
+          return res
+            .status(400)
+            .json({ code: 400, message: "중복되는 ID 입니다." });
         } else {
-          res.status(400).json({ message: "중복되는 email 입니다." });
+          return res
+            .status(400)
+            .json({ code: 400, message: "중복되는 email 입니다." });
         }
       } else if (error.code === "P2000") {
-        res.status(400).json({ message: "너무 긴 입력 값이 있습니다." });
+        return res
+          .status(400)
+          .json({ code: 400, message: "너무 긴 입력 값이 있습니다." });
       }
     }
   }

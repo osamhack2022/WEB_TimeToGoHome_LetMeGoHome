@@ -6,9 +6,10 @@ const prisma = new PrismaClient();
 
 const DAY = 1000 * 60 * 60 * 24;
 
-router.get("/",verifyToken, async (req, res) => {
+router.get("/", verifyToken, async (req, res) => {
   try {
-    const { todoId, date } = req.query;
+    const { date } = req.query;
+    const todoId = Number(req.query.todoId);
     const tasks = await prisma.task.findMany({
       where: {
         todoId,
@@ -43,7 +44,7 @@ router.get("/",verifyToken, async (req, res) => {
   }
 });
 
-router.post("/create",verifyToken, async (req, res) => {
+router.post("/create", verifyToken, async (req, res) => {
   try {
     const { todoId, content, datetime } = req.body;
     const task = await prisma.task.create({
@@ -78,7 +79,7 @@ router.post("/create",verifyToken, async (req, res) => {
   }
 });
 
-router.post("/update",verifyToken, async (req, res) => {
+router.post("/update", verifyToken, async (req, res) => {
   try {
     const { id: taskId, content, isDone } = req.body;
     let datetime;
@@ -126,7 +127,7 @@ router.post("/update",verifyToken, async (req, res) => {
   }
 });
 
-router.post("/delete",verifyToken, async (req, res) => {
+router.post("/delete", verifyToken, async (req, res) => {
   try {
     const { id: taskId } = req.body;
     const task = await prisma.task.delete({
