@@ -6,13 +6,12 @@ import { verifyToken } from "../../middleware/verifyToken.js";
 const prisma = new PrismaClient();
 const router = express.Router();
 
-router.get("/me", async (req, res) => {
-  const token = req.headers["x-access-token"];
-  const id = await verifyToken(token, res);
+router.get("/me", verifyToken, async (req, res) => {
+  const userId = req.decoded.id;
   const data = await prisma.user.findFirst({
-    where: { id: id },
+    where: { id: userId },
   });
-  res.status(200).json({ data });
+  return res.status(200).json({ code: 200, payload: data });
 });
 
 // 유저 정보 수정
@@ -27,14 +26,11 @@ router.post("/update", async (req, res) => {
       password,
       image,
     };
-    console.log(data);
     for (let key in data) {
       if (data[key] === undefined || data[key] === NaN) {
         delete data[key];
-      } else {
-        if (key === "password") {
-          data[key] = await bcrypt.hash(data[key], 10);
-        }
+      } else if (key === "password") {
+        data[key] = await bcrypt.hash(data[key], 10);
       }
     }
     if (Object.keys(data).length === 0) {
@@ -45,10 +41,11 @@ router.post("/update", async (req, res) => {
     }
     const user = await prisma.user.update({
       where: {
-        id: id,
+        id: userId,
       },
       data,
     });
+    delete user["password"];
     return res.status(200).json({
       code: 200,
       payload: user,
@@ -72,14 +69,16 @@ router.get("/delete", async (req, res) => {
   const token = req.headers["x-access-token"];
   const id = await verifyToken(token, res);
   try {
-    const User = await prisma.task.delete({
+    const userId = req.decoded.id;
+    const user = await prisma.task.delete({
       where: {
-        id: id,
+        id: userId,
       },
     });
+    delete user["password"];
     return res.status(200).json({
       code: 200,
-      payload: User,
+      payload: user,
     });
   } catch (error) {
     console.error(error);
@@ -97,16 +96,19 @@ router.get("/delete", async (req, res) => {
 });
 
 //유저 찾기
-router.get("/:id", async (req, res) => {
+router.get("/:id", verifyToken, async (req, res) => {
+  const userId = Number(req.params.id);
   const data = await prisma.user.findUnique({
-    where: { id: Number(req.params.id) },
+    where: { id: userId },
   });
   // 유저가 없을 경우
   if (!data || data.status === "DELETED") {
     // 만약 존재하지 않거나 DELETED 상태면 error
-    res.status(400).json({ message: "invalid email" });
+    return res.status(400).json({ code: 400, message: "invalid email" });
   }
-  res.status(200).json({ data });
+  delete data["email"];
+  delete data["password"];
+  return res.status(200).json({ code: 200, payload: data });
 });
 
 export default router;

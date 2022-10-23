@@ -24,6 +24,39 @@ const upload = multer({
 const prisma = new PrismaClient();
 const router = express.Router();
 
+<<<<<<< HEAD
+=======
+router.get("/", verifyToken, async (req, res) => {
+  const shareId = Number(req.query.id);
+  const { tag } = req.query;
+  if (tag) {
+    const share = await prisma.share.findMany({
+      orderBy: {
+        hit: "desc",
+      },
+      where: {
+        hashtag: {
+          contains: tag,
+        },
+      },
+    });
+    return res.status(200).json({ code: 200, payload: share });
+  } else if (shareId) {
+    const data = await prisma.share.findFirst({
+      where: { id: shareId },
+    });
+    return res.status(200).json({ code: 200, payload: data });
+  } else {
+    const share = await prisma.share.findMany({
+      orderBy: {
+        hit: "desc",
+      },
+    });
+    return res.status(200).json({ code: 200, payload: share });
+  }
+});
+
+>>>>>>> e8076bb (fix(back): resolve some api bugs)
 router.post("/update", verifyToken, async (req, res) => {
   try {
     const { id: shareId, title, description, image, hashtag } = req.body;
@@ -116,6 +149,7 @@ router.get("/tags", verifyToken, async (req, res) => {
       message: "Error",
     });
   }
+<<<<<<< HEAD
 });
 
 router.post("/upload", verifyToken, async (req, res) => {
@@ -170,6 +204,8 @@ router.get("/", verifyToken, async (req, res) => {
     });
     return res.status(200).json({ code: 200, payload: share });
   }
+=======
+>>>>>>> e8076bb (fix(back): resolve some api bugs)
 });
 
 export default router;
