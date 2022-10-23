@@ -21,6 +21,7 @@ import EditBtnImg from "../images/Edit_fill.png";
 import CheckBtnImg from "../images/Verified.png";
 
 function LandingPage({ user, Logout }) {
+  axios.defaults.headers.common["x-access-token"] = localStorage.getItem('token');  // setting token to axios header
   const [todoLists, setTodolists] = useState([
     {
       id: 350,
@@ -43,13 +44,16 @@ function LandingPage({ user, Logout }) {
       is_shared: false,
     },
   ]);
-  const [currentList, setCurrentList] = useState(todoLists[0]);
+  const [currentList, setCurrentList] = useState([]);
   const [inputTodo, setInput] = useState("");
   const [editTodo, setEdit] = useState("");
   const [time, setTime] = useState("");
   const [date, setDate] = useState(new Date()); // 날짜 for calendar
   const [task, setTask] = useState({ id: "", content: "", datetime: "" }); // calendar에서 선택한 날짜의 task들을 저장하는 state
   // const locale = "en-US"; // en-US, ko-KR, ja-JP, zh-CN, zh-TW
+  // console.log(dayjs(date).format("YYYY-MM-DD HH:mm"));
+  // console.log("currentList", currentList);
+
   const dummyTasklist = [
     {
       id: 1,
@@ -74,15 +78,31 @@ function LandingPage({ user, Logout }) {
     },
   ];
 
-  const [taskList, setTaskList] = useState(dummyTasklist); // calendar에서 선택한 날짜의 task들을 저장하는 state
+  const [taskList, setTaskList] = useState([]); // calendar에서 선택한 날짜의 task들을 저장하는 state
 
+  // <-------------------axios get request-------------------->
+  // getting todolists
   useEffect(() => {
     axios.get("/api/todo/me").then((response) => {
-      console.log(response);
       setTodolists(response.data.payload);
+      setCurrentList(response.data.payload[0]);
     });
   }, []);
-
+  
+  // getting tasks
+  useEffect(() => {
+    axios
+    .get("/api/todo/task", {params:{todoId: currentList.id, date: dayjs(date).format("YYYY-MM-DD")}})
+    .then((response) => {
+      console.log(currentList)
+      setTaskList(response.data.payload);
+    })
+    .catch((err) => {
+      console.log(err);
+      setTaskList(dummyTasklist);
+    });
+  }, [currentList, date]);
+  // <-------------------axios get request-------------------->
   const submitHandler = () => {
     setTaskList([
       ...taskList,
@@ -201,14 +221,15 @@ function LandingPage({ user, Logout }) {
           <div className="grow flex flex-col justify-center w-full">
             {todoLists.map((option) => (
               <button
-                className="flex flex-row items-center justify-center w-full h-[50px] bg-white rounded-md mt-2"
+                className="flex flex-row items-center justify-center bg-white rounded-md mt-2 focus:border-b-2 focus:bg-primary focus:text-white"
                 key={option.id}
                 type="button"
-                id="todolist-btn"
+                id={option.id}
+                onClick={() => setCurrentList(option)}
               >
                 <label
-                  className="lg:text-2xl md:text-xl sm:text-base text-sm font-StrongAFBold hover:border-b-2 hover:border-slate-800 cursor-pointer"
-                  htmlFor="todolist-btn"
+                  className="lg:text-2xl md:text-xl sm:text-base text-sm font-StrongAFBold focus:border-slate-500 hover:border-b-2 hover:border-slate-800 cursor-pointer"
+                  htmlFor={option.id}
                 >
                   {option.goal}
                 </label>
@@ -256,7 +277,7 @@ function LandingPage({ user, Logout }) {
                     className="form-check-input peer ml-3 h-6 w-6 border border-gray-300 rounded-sm focus:outline-none transition duration-200 mt-1 align-top bg-no-repeat bg-center bg-contain float-left mr-2 cursor-pointer"
                     type="checkbox"
                     value=""
-                    id={option.id}
+                    id={`task${option.id}`}
                     onClick={(e) => {
                       e.target.checked
                         ? (option.is_done = true)
@@ -265,13 +286,13 @@ function LandingPage({ user, Logout }) {
                   />
                   <label
                     className="form-check-label inline-block text-gray-800 xl:text-2xl text-xl font-StrongAF peer-checked:line-through peer-checked:text-gray-400"
-                    htmlFor={option.id}
+                    htmlFor={`task${option.id}`}
                   >
                     {option.content}
                   </label>
                   <div className="ml-3 peer-checked:text-gray-400">
-                    <label className="font-StrongAF" htmlFor={option.id}>
-                      {option.datetime}
+                    <label className="font-StrongAF" htmlFor={`task${option.id}`}>
+                      {dayjs(option.datetime).format("YYYY-MM-DD HH:mm")}
                     </label>
                     <button
                       type="button"
@@ -300,7 +321,7 @@ function LandingPage({ user, Logout }) {
                         document.getElementById("input_task_edit").value =
                           option.content;
                         document.getElementById("edit_time").value =
-                          option.datetime.slice(11);
+                          dayjs(option.datetime).format("HH:mm");
                       }}
                     >
                       <img

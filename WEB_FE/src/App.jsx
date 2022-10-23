@@ -1,3 +1,5 @@
+/* eslint-disable react/jsx-no-bind */
+/* eslint-disable no-alert */
 /* eslint-disable react/react-in-jsx-scope */
 /* eslint-disable no-console */
 /* eslint-disable react/no-unknown-property */
@@ -17,8 +19,29 @@ export default function App() {
     army_rank: "일병",
   };
 
-  const [user, setUser] = useState({ email: "", password: "" });
+  const [user, setUser] = useState({
+    id: "",
+    email: "",
+    name: "",
+    armyType: "",
+    armyRank: "",
+    enlistment: "",
+    discharge: "",
+  });
   const [error, setError] = useState("");
+
+  // setting axios default url
+  axios.defaults.baseURL = "https://petercode.kro.kr";
+
+  function Register(details) {
+    const { email, password, name, armyType, armyRank, enlistment, discharge } =
+      details;
+    console.log(details);
+    axios.post("/api/auth/register", details).then((res) => {
+      console.log(res);
+      console.log(res.data);
+    });
+  }
 
   const Login = (details) => {
     // eslint-disable-next-line no-console
@@ -26,24 +49,48 @@ export default function App() {
     const { email: userEmail, password: userPassword } = details;
 
     axios
-      .post("/api/login", details)
-
-      .then((response) => {
-        // later on if statement will be done in backend, response contains user information
-        if (userEmail === adminUser.email && userPassword === adminUser.pw) {
-          console.log("Logged In!!!");
-          setUser(response.data);
-          localStorage.setItem("user", JSON.stringify(response.data));
+      .post("/api/auth/login", details)
+      .catch((err) => {
+        if (err.response.status === 400) {
+          alert("아이디 또는 비밀번호가 틀렸습니다.");
         } else {
-          console.log("details do not match");
+          alert("로그인에 실패했습니다.");
+        }
+      })
+      .then((response) => {
+        if (response.status === 200) {
+          axios.defaults.headers.common["x-access-token"] = response.data.token; // setting token to axios header
+          console.log("Logged In!!!");
+          axios.get("/api/user/me").then((res) => {
+            console.log("from app.jsx", res.data.data);
+            setUser({ ...res.data.data});
+            // {
+            //   id: res.data.id,
+            //   email: res.data.email,
+            //   name: res.data.name,
+            //   army_type: res.data.army_type,
+            //   army_rank: res.data.army_rank,
+            //   enlistment: res.data.enlistment,
+            //   discharge: res.data.discharge,
+            // });
+            localStorage.setItem("user", JSON.stringify(res.data));
+            localStorage.setItem('token', response.data.token);
+          });
+        } else {
+          alert("details do not match");
         }
       });
   };
   const Logout = () => {
     console.log("Logout");
     setUser({
+      id: "",
       email: "",
-      password: "",
+      name: "",
+      armyType: "",
+      armyRank: "",
+      enlistment: "",
+      discharge: "",
     });
     localStorage.clear();
   };
@@ -63,6 +110,7 @@ export default function App() {
         Login={Login}
         error={error}
         admin={adminUser}
+        Register={Register}
       />
     </div>
   );

@@ -1,3 +1,4 @@
+/* eslint-disable react/prop-types */
 /* eslint-disable jsx-a11y/no-static-element-interactions */
 /* eslint-disable jsx-a11y/no-noninteractive-element-interactions */
 /* eslint-disable jsx-a11y/click-events-have-key-events */
@@ -6,15 +7,20 @@ import eye from "../images/eye.png";
 import eyeSlash from "../images/eyeSlash.png";
 import triangle from "../images/triangle.png";
 
-function RegisterForm() {
+function RegisterForm({ Register }) {
   const [eyeImage, setEye] = useState(eye);
   const [isRankActive, setRankActive] = useState(false);
   const [isMilitaryActive, setMilitaryActive] = useState(false);
   const [selectedRank, setSelectedRank] = useState("계급");
   const [selectedMilitary, setSelectedMilitary] = useState("군");
-
+  const [details, setDetails] = useState({ email: "", password: "", name: "", armyType: "", armyRank: "", enlistment: "", discharge: "" });
   const military = ["육군", "해군", "공군"];
   const rank = ["이병", "일병", "상병", "병장"];
+
+  const submitHandler = (e) => {
+    e.preventDefault();
+    Register(details);
+  };
 
   function switchImage() {
     if (eyeImage === eye) {
@@ -29,9 +35,11 @@ function RegisterForm() {
   function handleDropdown(e) {
     if (e.target.id === "military") {
       setSelectedMilitary(e.target.textContent);
+      setDetails({ ...details, armyType: e.target.textContent });
       setMilitaryActive(!isMilitaryActive);
     } else if (e.target.id === "rank") {
       setSelectedRank(e.target.textContent);
+      setDetails({ ...details, armyRank: e.target.textContent });
       setRankActive(!isRankActive);
     }
   }
@@ -39,7 +47,7 @@ function RegisterForm() {
   return (
     <div className="bg font-StrongAF">
       <span className="logo font-StrongAFBold">이젠 돌아갈 때</span>
-      <form className="relative h-screen flex flex-row-reverse">
+      <form className="relative h-screen flex flex-row-reverse" onSubmit={submitHandler}>
         <div className="relative bg-white lg:w-[45%] w-screen flex-wrap rounded-l-3xl mb-5 mt-6 flex-col content-between">
           <div className="login-label">
             <span>Register</span>
@@ -51,6 +59,7 @@ function RegisterForm() {
               name="name"
               id="name"
               placeholder="Full Name"
+              onChange={(e) => setDetails({ ...details, name: e.target.value })}
             />
           </div>
           <div className="form-group-register mt-12">
@@ -60,6 +69,7 @@ function RegisterForm() {
               name="email"
               id="email"
               placeholder="e-mail"
+              onChange={(e) => setDetails({ ...details, email: e.target.value })}
             />
           </div>
           <div className="form-group-register mt-24">
@@ -69,6 +79,7 @@ function RegisterForm() {
               name="passwords"
               id="passwords"
               placeholder="Password"
+              onChange={(e) => setDetails({ ...details, password: e.target.value })}
             />
             <img
               className="absolute left-[482px] bottom-[7px]"
@@ -151,6 +162,7 @@ function RegisterForm() {
               onBlur={(e) => {
                 e.target.type = "text";
               }}
+              onChange={(e) => setDetails({ ...details, enlistment: e.target.value })}
             />
           </div>
           <div className="form-group-register mt-72">
@@ -168,6 +180,7 @@ function RegisterForm() {
               onBlur={(e) => {
                 e.target.type = "text";
               }}
+              onChange={(e) => setDetails({ ...details, discharge: e.target.value })}
             />
           </div>
 
