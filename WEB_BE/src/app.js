@@ -4,12 +4,6 @@ let port = process.env.port || 5000;
 import bodyParser from "body-parser";
 import morgan from "morgan";
 import cors from "cors";
-
-import swaggerJsdoc from "swagger-jsdoc";
-import swaggerUi from "swagger-ui-express";
-import swaggerOptions from "./swagger.js";
-const specs = swaggerJsdoc(swaggerOptions);
-
 import apiRouter from "./routes/api.js";
 
 app.use(
@@ -31,7 +25,13 @@ app.get("/", (req, res) => {
 
 app.use("/api", apiRouter);
 
-app.use("/docs", swaggerUi.serve, swaggerUi.setup(specs, { explorer: true }));
+if (process.env.NODE_ENV !== "production") {
+  const swaggerJsdoc = await import("swagger-jsdoc");
+  const swaggerUi = await import("swagger-ui-express");
+  const swaggerOptions = await import("./swagger.js");
+  const specs = swaggerJsdoc.default(swaggerOptions.default);
+  app.use("/docs", swaggerUi.serve, swaggerUi.setup(specs, { explorer: true }));
+}
 
 const server = app.listen(port, () => {
   console.log(`server on ${port}`);

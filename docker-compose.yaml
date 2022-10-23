@@ -1,0 +1,32 @@
+version: "3.9"
+services:
+  backend:
+    container_name: ttgh-be
+    build: ./WEB_BE
+    restart: unless-stopped
+    ports:
+      - "5000:5000"
+    links:
+      - database
+    env_file:
+      - ./DB/.env
+    depends_on:
+      database:
+        condition: service_healthy
+  database:
+    container_name: ttgh-db
+    image: mysql
+    restart: unless-stopped
+    ports:
+      - "3306:3306"
+    env_file:
+      - ./DB/.env
+    environment:
+      TZ: "Asia/Seoul"
+    volumes:
+      - ./DB/init:/docker-entrypoint-initdb.d
+    healthcheck:
+      test: mysqladmin ping -uroot -p${MYSQL_ROOT_PASSWORD}
+      interval: 10s
+      timeout: 10s
+      retries: 10

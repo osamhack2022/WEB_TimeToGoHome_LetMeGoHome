@@ -3,7 +3,8 @@ WORKDIR /usr/src/app
 ENV PORT=5000 \
     NODE_ENV=production
 COPY package*.json ./
-RUN npm install
-COPY ./src .
+COPY ./src ./src
+COPY ./prisma/schema.prisma ./prisma/schema.prisma
 EXPOSE 5000
-CMD ["node", "app.js"]
+RUN npm install && npx prisma generate
+CMD node src/app.js
