@@ -5,19 +5,16 @@ import LoginForm from "../container/LoginForm";
 import RegisterForm from "../container/RegisterForm";
 import LandingPage from "../container/LandingPage";
 
-function router({ user, Login, error, admin, Logout, Register }) {
+function router({ user, setUser, Login, Logout }) {
   return (
     <Router>
       {user.email !== "" ? (
         // <Routes>
-        <LandingPage
-          user={user}
-          Logout={Logout}
-        />
+        <LandingPage user={user} setUser={setUser} Logout={Logout} />
       ) : (
         <Routes>
-          <Route path="/" element={<LoginForm Login={Login} error={error} />} />
-          <Route path="/register" element={<RegisterForm Register={Register}/>} />
+          <Route path="/" element={<LoginForm Login={Login} />} />
+          <Route path="/register" element={<RegisterForm />} />
         </Routes>
       )}
     </Router>

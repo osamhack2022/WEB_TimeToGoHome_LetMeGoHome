@@ -1,17 +1,9 @@
-/* eslint-disable no-shadow */
-/* eslint-disable import/no-extraneous-dependencies */
-/* eslint-disable no-param-reassign */
-/* eslint-disable no-unused-expressions */
-/* eslint-disable jsx-a11y/label-has-associated-control */
-/* eslint-disable no-console */
-/* eslint-disable react/self-closing-comp */
-/* eslint-disable react/prop-types */
-
 import React, { useState, useEffect } from "react";
-import axios from "axios";
-import dayjs from "dayjs";
+import PropTypes from "prop-types";
 import Calendar from "react-calendar";
 import "../calendar.css";
+import dayjs from "dayjs";
+import axios from "../utils/axios.util";
 
 import AddTaskListImg from "../images/Add_1.png";
 import AddTodo from "../images/Add_2.png";
@@ -20,89 +12,47 @@ import AddListImg from "../images/AddList.png";
 import EditBtnImg from "../images/Edit_fill.png";
 import CheckBtnImg from "../images/Verified.png";
 
-function LandingPage({ user, Logout }) {
-  axios.defaults.headers.common["x-access-token"] = localStorage.getItem('token');  // setting token to axios header
-  const [todoLists, setTodolists] = useState([
-    {
-      id: 350,
-      user_id: 1234123421341324,
-      goal: "3대350",
-      duration: 3,
-      start: "2021-08-01",
-      end: "2021-08-10",
-      is_done: false,
-      is_shared: false,
-    },
-    {
-      id: 500,
-      user_id: 1234123421341324,
-      goal: "3대500",
-      duration: 4,
-      start: "2021-09-01",
-      end: "2021-09-10",
-      is_done: false,
-      is_shared: false,
-    },
-  ]);
+function LandingPage(props) {
+  const { user, setUser, Logout } = props;
+  const [todoLists, setTodolists] = useState([]);
   const [currentList, setCurrentList] = useState([]);
   const [inputTodo, setInput] = useState("");
   const [editTodo, setEdit] = useState("");
   const [time, setTime] = useState("");
   const [date, setDate] = useState(new Date()); // 날짜 for calendar
   const [task, setTask] = useState({ id: "", content: "", datetime: "" }); // calendar에서 선택한 날짜의 task들을 저장하는 state
-  // const locale = "en-US"; // en-US, ko-KR, ja-JP, zh-CN, zh-TW
-  // console.log(dayjs(date).format("YYYY-MM-DD HH:mm"));
-  // console.log("currentList", currentList);
-
-  const dummyTasklist = [
-    {
-      id: 1,
-      todo_id: 350,
-      content: "덤벨 프레스 5set",
-      datetime: "2021-08-01 12:00",
-      is_done: false,
-    },
-    {
-      id: 2,
-      todo_id: 350,
-      content: "벤치 프레스 12set",
-      datetime: "2021-08-01 13:00",
-      is_done: false,
-    },
-    {
-      id: 3,
-      todo_id: 350,
-      content: "덤벨 플라이 5set",
-      datetime: "2021-08-01 14:00",
-      is_done: false,
-    },
-  ];
-
   const [taskList, setTaskList] = useState([]); // calendar에서 선택한 날짜의 task들을 저장하는 state
 
   // <-------------------axios get request-------------------->
   // getting todolists
+  useEffect(() => {
+    axios.get("/api/user/me").then((response) => {
+      setUser({ ...response.data.payload });
+    });
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, []);
   useEffect(() => {
     axios.get("/api/todo/me").then((response) => {
       setTodolists(response.data.payload);
       setCurrentList(response.data.payload[0]);
     });
   }, []);
-  
   // getting tasks
   useEffect(() => {
     axios
-    .get("/api/todo/task", {params:{todoId: currentList.id, date: dayjs(date).format("YYYY-MM-DD")}})
-    .then((response) => {
-      console.log(currentList)
-      setTaskList(response.data.payload);
-    })
-    .catch((err) => {
-      console.log(err);
-      setTaskList(dummyTasklist);
-    });
+      .get("/api/todo/task", {
+        params: {
+          todoId: currentList.id,
+          date: dayjs(date).format("YYYY-MM-DD"),
+        },
+      })
+      .then((response) => {
+        setTaskList(response.data.payload);
+      })
+      .catch((err) => {});
   }, [currentList, date]);
   // <-------------------axios get request-------------------->
+
   const submitHandler = () => {
     setTaskList([
       ...taskList,
@@ -123,7 +73,7 @@ function LandingPage({ user, Logout }) {
         datetime: `${dayjs(date).format("YYYY-MM-DD")} ${time}`,
       });
     }
-  }, [inputTodo, time]);
+  }, [task, inputTodo, date, time]);
 
   function handleAddTask(e) {
     e.preventDefault();
@@ -159,7 +109,7 @@ function LandingPage({ user, Logout }) {
         datetime: `${dayjs(date).format("YYYY-MM-DD")} ${time}`,
       });
     }
-  }, [editTodo, time]);
+  }, [task, editTodo, date, time]);
 
   function handleEditTask(e) {
     e.preventDefault();
@@ -179,15 +129,14 @@ function LandingPage({ user, Logout }) {
       alert("이미 추가된 할 일입니다!");
       return;
     }
-    const newTaskList = taskList.map((taskItem) => {
-      if (taskItem.id === task.id) {
-        taskItem.content = task.content;
-        taskItem.datetime = task.datetime;
+    const newTaskList = taskList;
+    for (let i = 0; i < Object.keys(newTaskList).length; i += 1) {
+      if (newTaskList[i].id === task.id) {
+        newTaskList[i].content = task.content;
+        newTaskList[i].datetime = task.datetime;
       }
-      return taskItem;
-    });
+    }
     setTaskList(newTaskList);
-
     document.getElementById("editTaskModal").style.display = "none";
   }
 
@@ -241,21 +190,21 @@ function LandingPage({ user, Logout }) {
             className="flex flex-row content-between basis-1/6"
           >
             <button
+              id="add-todolist-btn"
               type="button"
               className="flex flex-row items-center justify-center w-[80%] h-[50px] bg-white rounded-md mt-2"
-              id="add-todolist-btn"
             >
               <img
                 src={AddListImg}
                 alt="add-todolist"
                 className="w-12 h-12 mr-2 mb-8"
               />
-              <label
-                className="lg:text-2xl md:text-xl sm:text-base text-sm font-StrongAFBold hover:border-b-2 hover:border-slate-800 cursor-pointer"
+              <b
                 htmlFor="add-todolist-btn"
+                className="lg:text-2xl md:text-xl sm:text-base text-sm font-StrongAFBold hover:border-b-2 hover:border-slate-800 cursor-pointer"
               >
                 TODOLIST 추가
-              </label>
+              </b>
             </button>
           </div>
         </div>
@@ -279,9 +228,8 @@ function LandingPage({ user, Logout }) {
                     value=""
                     id={`task${option.id}`}
                     onClick={(e) => {
-                      e.target.checked
-                        ? (option.is_done = true)
-                        : (option.is_done = false);
+                      // eslint-disable-next-line no-param-reassign
+                      option.is_done = e.target.checked;
                     }}
                   />
                   <label
@@ -291,7 +239,10 @@ function LandingPage({ user, Logout }) {
                     {option.content}
                   </label>
                   <div className="ml-3 peer-checked:text-gray-400">
-                    <label className="font-StrongAF" htmlFor={`task${option.id}`}>
+                    <label
+                      className="font-StrongAF"
+                      htmlFor={`task${option.id}`}
+                    >
                       {dayjs(option.datetime).format("YYYY-MM-DD HH:mm")}
                     </label>
                     <button
@@ -320,8 +271,9 @@ function LandingPage({ user, Logout }) {
                         setEdit(option.content);
                         document.getElementById("input_task_edit").value =
                           option.content;
-                        document.getElementById("edit_time").value =
-                          dayjs(option.datetime).format("HH:mm");
+                        document.getElementById("edit_time").value = dayjs(
+                          option.datetime
+                        ).format("HH:mm");
                       }}
                     >
                       <img
@@ -460,7 +412,6 @@ function LandingPage({ user, Logout }) {
                       placeholder="시간을 정해주세요!"
                       onChange={(e) => {
                         setTime(e.target.value);
-                        console.log("Edit_time:", time);
                       }}
                       onFocus={(e) => {
                         e.target.type = "time";
@@ -495,8 +446,8 @@ function LandingPage({ user, Logout }) {
               className="border-0"
               onChange={(Date) => setDate(Date)}
               value={date}
-              formatDay={(locale, date) => date.getDate()} // remove '일' from day
-              formatMonth={(locale, date) => date.getMonth() + 1} // remove '월' from month
+              formatDay={(locale, Date) => Date.getDate()} // remove '일' from day
+              formatMonth={(locale, Date) => Date.getMonth() + 1} // remove '월' from month
             />
           </div>
         </div>
@@ -504,5 +455,19 @@ function LandingPage({ user, Logout }) {
     </div>
   );
 }
+
+LandingPage.propTypes = {
+  user: PropTypes.shape({
+    id: PropTypes.string.isRequired,
+    email: PropTypes.string.isRequired,
+    name: PropTypes.string.isRequired,
+    armyType: PropTypes.string.isRequired,
+    armyRank: PropTypes.string.isRequired,
+    enlistment: PropTypes.string.isRequired,
+    discharge: PropTypes.string.isRequired,
+  }).isRequired,
+  setUser: PropTypes.func.isRequired,
+  Logout: PropTypes.func.isRequired,
+};
 
 export default LandingPage;

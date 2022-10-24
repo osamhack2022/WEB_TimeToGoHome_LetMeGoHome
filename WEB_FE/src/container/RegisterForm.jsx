@@ -1,28 +1,39 @@
-/* eslint-disable react/prop-types */
-/* eslint-disable jsx-a11y/no-static-element-interactions */
-/* eslint-disable jsx-a11y/no-noninteractive-element-interactions */
-/* eslint-disable jsx-a11y/click-events-have-key-events */
 import React, { useState } from "react";
+import axios from "../utils/axios.util";
 import eye from "../images/eye.png";
 import eyeSlash from "../images/eyeSlash.png";
 import triangle from "../images/triangle.png";
 
-function RegisterForm({ Register }) {
-  const [eyeImage, setEye] = useState(eye);
+function RegisterForm() {
+  const [eyeImage, setEye] = useState(eyeSlash);
   const [isRankActive, setRankActive] = useState(false);
   const [isMilitaryActive, setMilitaryActive] = useState(false);
   const [selectedRank, setSelectedRank] = useState("계급");
   const [selectedMilitary, setSelectedMilitary] = useState("군");
-  const [details, setDetails] = useState({ email: "", password: "", name: "", armyType: "", armyRank: "", enlistment: "", discharge: "" });
+  const [details, setDetails] = useState({
+    email: "",
+    password: "",
+    name: "",
+    armyType: "",
+    armyRank: "",
+    enlistment: "",
+    discharge: "",
+  });
   const military = ["육군", "해군", "공군"];
   const rank = ["이병", "일병", "상병", "병장"];
+
+  const Register = () => {
+    const { email, password, name, armyType, armyRank, enlistment, discharge } =
+      details;
+    axios.post("/api/auth/register", details).then((res) => {});
+  };
 
   const submitHandler = (e) => {
     e.preventDefault();
     Register(details);
   };
 
-  function switchImage() {
+  function switchImage(e, idx) {
     if (eyeImage === eye) {
       setEye(eyeSlash);
       document.getElementById("passwords").type = "password";
@@ -47,7 +58,10 @@ function RegisterForm({ Register }) {
   return (
     <div className="bg font-StrongAF">
       <span className="logo font-StrongAFBold">이젠 돌아갈 때</span>
-      <form className="relative h-screen flex flex-row-reverse" onSubmit={submitHandler}>
+      <form
+        className="relative h-screen flex flex-row-reverse"
+        onSubmit={submitHandler}
+      >
         <div className="relative bg-white lg:w-[45%] w-screen flex-wrap rounded-l-3xl mb-5 mt-6 flex-col content-between">
           <div className="login-label">
             <span>Register</span>
@@ -69,45 +83,61 @@ function RegisterForm({ Register }) {
               name="email"
               id="email"
               placeholder="e-mail"
-              onChange={(e) => setDetails({ ...details, email: e.target.value })}
+              onChange={(e) =>
+                setDetails({ ...details, email: e.target.value })
+              }
             />
           </div>
           <div className="form-group-register mt-24">
             <input
-              type="text"
+              type="password"
               className="w-[502px] h-[35px] border-b focus:outline-0 border-slate-400 focus:border-slate-600 hover:border-slate-600 hover:transition-colors"
               name="passwords"
               id="passwords"
               placeholder="Password"
-              onChange={(e) => setDetails({ ...details, password: e.target.value })}
+              onChange={(e) =>
+                setDetails({ ...details, password: e.target.value })
+              }
             />
-            <img
+            <button
+              type="button"
               className="absolute left-[482px] bottom-[7px]"
-              src={eyeImage}
-              alt="this ain't gonna work"
               onClick={switchImage}
-            />
+              onKeyPress={switchImage}
+            >
+              <img src={eyeImage} alt="click to show or hide password" />
+            </button>
           </div>
-          
+
           <div className="dropdown relative flex flex-row form-group-register mt-36 group w-[400px] select-none cursor-pointer">
             <div
+              role="tablist"
+              tabIndex={0}
               id="military"
               className="dropdown-btn rounded-md absolute w-2/5 flex justify-between p-[10px] bg-[#fff] shadow-[3px_3px_10px_6px_rgba(0,0,0,0.06)] items-center"
               onClick={(e) => setMilitaryActive(!isMilitaryActive)}
+              onKeyPress={(e) => setMilitaryActive(!isMilitaryActive)}
             >
               <span>{selectedMilitary}</span>
               <div className="traingle box-border w-[11px] h-[11px]">
-                <img src={triangle} alt="Triangle img" className="src" />
+                <img
+                  src={triangle}
+                  alt="click to show military types"
+                  className="src"
+                />
               </div>
             </div>
             {isMilitaryActive && (
               <div className="dropdown-content bg-slate-50 rounded-md absolute top-[45px] p-[15px] shadow-bx w-2/5 z-10 transition-all">
                 {military.map((option) => (
                   <div
+                    role="tab"
+                    tabIndex={0}
                     key={option}
                     id="military"
                     className="dropdown-item p-[10px] hover:bg-slate-100 z-10"
                     onClick={handleDropdown}
+                    onKeyPress={handleDropdown}
                   >
                     {option}
                   </div>
@@ -116,22 +146,32 @@ function RegisterForm({ Register }) {
             )}
 
             <div
+              role="tablist"
+              tabIndex={0}
               className="dropdown-btn rounded-md absolute w-2/5 left-1/2 flex justify-between p-[10px] bg-[#fff] shadow-[3px_3px_10px_6px_rgba(0,0,0,0.06)] items-center"
               onClick={(e) => setRankActive(!isRankActive)}
+              onKeyPress={(e) => setRankActive(!isRankActive)}
             >
               <span>{selectedRank}</span>
               <div className="traingle box-border w-[11px] h-[11px]">
-                <img src={triangle} alt="Triangle img" className="src" />
+                <img
+                  src={triangle}
+                  alt="click to show rank types"
+                  className="src"
+                />
               </div>
             </div>
             {isRankActive && (
               <div className="dropdown-content bg-slate-50 rounded-md absolute top-[45px] left-1/2 p-[15px] shadow-bx w-2/5 z-10">
                 {rank.map((option) => (
                   <div
+                    role="tab"
+                    tabIndex={0}
                     key={option}
                     id="rank"
                     className="dropdown-item p-[10px] hover:bg-slate-100"
                     onClick={handleDropdown}
+                    onKeyPress={handleDropdown}
                   >
                     {option}
                   </div>
@@ -162,7 +202,9 @@ function RegisterForm({ Register }) {
               onBlur={(e) => {
                 e.target.type = "text";
               }}
-              onChange={(e) => setDetails({ ...details, enlistment: e.target.value })}
+              onChange={(e) =>
+                setDetails({ ...details, enlistment: e.target.value })
+              }
             />
           </div>
           <div className="form-group-register mt-72">
@@ -180,7 +222,9 @@ function RegisterForm({ Register }) {
               onBlur={(e) => {
                 e.target.type = "text";
               }}
-              onChange={(e) => setDetails({ ...details, discharge: e.target.value })}
+              onChange={(e) =>
+                setDetails({ ...details, discharge: e.target.value })
+              }
             />
           </div>
 
