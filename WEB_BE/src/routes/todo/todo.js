@@ -3,6 +3,7 @@ const router = express.Router();
 import { Prisma, PrismaClient } from "@prisma/client";
 const prisma = new PrismaClient();
 import taskRouter from "./task/task.js";
+import { verifyToken } from "../../middleware/verifyToken.js";
 
 const DAY = 1000 * 60 * 60 * 24;
 

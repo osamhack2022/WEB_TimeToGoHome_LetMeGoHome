@@ -1,6 +1,7 @@
 import express from "express";
 const router = express.Router();
 import { Prisma, PrismaClient } from "@prisma/client";
+import { verifyToken } from "../../../middleware/verifyToken.js";
 const prisma = new PrismaClient();
 
 const DAY = 1000 * 60 * 60 * 24;
