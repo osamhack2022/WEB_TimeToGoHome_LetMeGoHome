@@ -68,7 +68,7 @@ function SharePage({ user, Logout }) {
         </div>
         <div className="dashboard flex flex-row bg-gray-200 w-screen h-screen">
           {/* title, description, hashtag, image */}
-          <div className="flex flex-col items-center text-2xl">
+          <div className="flex flex-col items-center text-2xl mx-auto">
             {todoLists.map((todo) => (
               <div>
                 <div>
