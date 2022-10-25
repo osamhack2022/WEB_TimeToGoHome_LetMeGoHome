@@ -5,10 +5,9 @@ import eye from "../images/eye.png";
 import eyeSlash from "../images/eyeSlash.png";
 
 function LoginForm(props) {
-  const { Login } = props;
+  const { Login, error } = props;
   const [details, setDetails] = useState({ email: "", password: "" });
   const [eyeImage, setEye] = useState(eyeSlash);
-  const [error, setError] = useState("");
 
   const submitHandler = (e) => {
     e.preventDefault();
@@ -60,7 +59,7 @@ function LoginForm(props) {
                 setDetails({ ...details, password: e.target.value })
               }
             />
-            <div className="text-red-600">{error}</div>
+            <div className="text-red-600">{error.msg}</div>
             <button
               type="button"
               className="absolute left-[482px] bottom-[7px]"
@@ -92,6 +91,11 @@ function LoginForm(props) {
 
 LoginForm.propTypes = {
   Login: PropTypes.func.isRequired,
+  error: PropTypes.shape({
+    code: PropTypes.number.isRequired,
+    msg: PropTypes.string,
+    at: PropTypes.string.isRequired,
+  }).isRequired,
 };
 
 export default LoginForm;

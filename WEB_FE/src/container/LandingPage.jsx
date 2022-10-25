@@ -6,9 +6,9 @@ import dayjs from "dayjs";
 import axios from "../utils/axios.util";
 
 import AddTaskListImg from "../images/Add_1.png";
-import AddTodo from "../images/Add_2.png";
+import AddTask from "../images/Add_2.png";
 import TrashImg from "../images/Trash_1.png";
-import AddListImg from "../images/AddList.png";
+import AddTodo from "../images/AddList.png";
 import EditBtnImg from "../images/Edit_fill.png";
 import CheckBtnImg from "../images/Verified.png";
 
@@ -16,8 +16,8 @@ function LandingPage(props) {
   const { user, setUser, Logout } = props;
   const [todoLists, setTodolists] = useState([]);
   const [currentList, setCurrentList] = useState([]);
-  const [inputTodo, setInput] = useState("");
-  const [editTodo, setEdit] = useState("");
+  const [inputTask, setInputTask] = useState("");
+  const [editTask, setEditTask] = useState("");
   const [time, setTime] = useState("");
   const [date, setDate] = useState(new Date()); // 날짜 for calendar
   const [task, setTask] = useState({ id: "", content: "", datetime: "" }); // calendar에서 선택한 날짜의 task들을 저장하는 state
@@ -53,7 +53,7 @@ function LandingPage(props) {
   }, [currentList, date]);
   // <-------------------axios get request-------------------->
 
-  const submitHandler = () => {
+  const taskSubmitHandler = () => {
     setTaskList([
       ...taskList,
       {
@@ -66,34 +66,34 @@ function LandingPage(props) {
   };
 
   useEffect(() => {
-    if (inputTodo) {
+    if (inputTask) {
       setTask({
         ...task,
-        content: inputTodo,
+        content: inputTask,
         datetime: `${dayjs(date).format("YYYY-MM-DD")} ${time}`,
       });
     }
-  }, [task, inputTodo, date, time]);
+  }, [task, inputTask, date, time]);
 
   function handleAddTask(e) {
     e.preventDefault();
 
-    if (!task.content || !inputTodo) {
+    if (!task.content || !inputTask) {
       // eslint-disable-next-line no-alert
       alert("할 일을 입력해주세요!");
       return;
     }
-    const isTodoInList = taskList.some(
+    const isTaskInList = taskList.some(
       (taskItem) =>
         taskItem.content.toLowerCase().replace(/\s/g, "") ===
         task.content.toLowerCase().replace(/\s/g, "")
     );
-    if (isTodoInList) {
+    if (isTaskInList) {
       // eslint-disable-next-line no-alert
       alert("이미 추가된 할 일입니다!");
       return;
     }
-    submitHandler();
+    taskSubmitHandler();
     document.getElementById("input_task").value = "";
     setTask({ id: "", content: "", datetime: "" });
     setTime("");
@@ -102,29 +102,29 @@ function LandingPage(props) {
   }
 
   useEffect(() => {
-    if (editTodo) {
+    if (editTask) {
       setTask({
         ...task,
-        content: editTodo,
+        content: editTask,
         datetime: `${dayjs(date).format("YYYY-MM-DD")} ${time}`,
       });
     }
-  }, [task, editTodo, date, time]);
+  }, [task, editTask, date, time]);
 
   function handleEditTask(e) {
     e.preventDefault();
-    if (!editTodo) {
+    if (!editTask) {
       // eslint-disable-next-line no-alert
       alert("수정 할 일을 입력해주세요!");
       return;
     }
-    const isTodoInList = taskList.some(
+    const isTaskInList = taskList.some(
       (taskItem) =>
         taskItem.content.toLowerCase().replace(/\s/g, "") ===
           task.content.toLowerCase().replace(/\s/g, "") &&
         taskItem.datetime === task.datetime
     );
-    if (isTodoInList) {
+    if (isTaskInList) {
       // eslint-disable-next-line no-alert
       alert("이미 추가된 할 일입니다!");
       return;
@@ -141,8 +141,8 @@ function LandingPage(props) {
   }
 
   function deleteTask(id) {
-    const newTodoList = taskList.filter((TASK, i) => TASK.id !== id);
-    setTaskList(newTodoList);
+    const newTaskList = taskList.filter((TASK, i) => TASK.id !== id);
+    setTaskList(newTaskList);
   }
 
   return (
@@ -195,7 +195,7 @@ function LandingPage(props) {
               className="flex flex-row items-center justify-center w-[80%] h-[50px] bg-white rounded-md mt-2"
             >
               <img
-                src={AddListImg}
+                src={AddTodo}
                 alt="add-todolist"
                 className="w-12 h-12 mr-2 mb-8"
               />
@@ -268,7 +268,7 @@ function LandingPage(props) {
                           content: option.content,
                           datetime: option.datetime,
                         });
-                        setEdit(option.content);
+                        setEditTask(option.content);
                         document.getElementById("input_task_edit").value =
                           option.content;
                         document.getElementById("edit_time").value = dayjs(
@@ -286,7 +286,6 @@ function LandingPage(props) {
                 </div>
               ))}
             </div>
-
             <div className="absolute createButton flex justify-end order-last top-[calc(100%-70px)] right-[10px] w-full">
               <button
                 type="button"
@@ -296,10 +295,11 @@ function LandingPage(props) {
                     "block";
                 }}
               >
-                <img src={AddTaskListImg} alt="AddTodoList" />
+                <img src={AddTaskListImg} alt="AddTask" />
               </button>
             </div>
 
+            {/* Task 작성 모달창 */}
             <div
               id="inputTaskModal"
               className="modal bg-gray-700/30 hidden h-full overflow-auto fixed top-0 left-0 w-full z-10"
@@ -310,7 +310,7 @@ function LandingPage(props) {
               >
                 <div className="flex flex-row items-center">
                   <h2 className="grow font-StrongAFBold text-3xl ml-5">
-                    TODO 추가
+                    Task 추가
                   </h2>
                   <button
                     className="order-last"
@@ -334,7 +334,7 @@ function LandingPage(props) {
                       type="text"
                       placeholder="ex) 운동하기"
                       onChange={(e) => {
-                        setInput(e.target.value);
+                        setInputTask(e.target.value);
                       }}
                     />
                   </div>
@@ -356,16 +356,18 @@ function LandingPage(props) {
                     />
                   </div>
                   <button
-                    id="addTodoBtn"
+                    id="addTaskBtn"
                     type="button"
                     className="mx-auto w-[60px] h-[60px] mt-16"
                     onClick={handleAddTask}
                   >
-                    <img src={AddTodo} alt="Addtask" />
+                    <img src={AddTask} alt="Addtask" />
                   </button>
                 </div>
               </div>
             </div>
+
+            {/* Task 수정 모달창 */}
             <div
               id="editTaskModal"
               className="modal bg-gray-700/30 hidden h-full overflow-auto fixed top-0 left-0 w-full z-10"
@@ -376,7 +378,7 @@ function LandingPage(props) {
               >
                 <div className="flex flex-row items-center">
                   <h2 className="grow font-StrongAFBold text-3xl ml-5">
-                    TODO 수정
+                    Task 수정
                   </h2>
                   <button
                     className="order-last"
@@ -400,7 +402,7 @@ function LandingPage(props) {
                       type="text"
                       placeholder="ex) 운동하기"
                       onChange={(e) => {
-                        setEdit(e.target.value);
+                        setEditTask(e.target.value);
                       }}
                     />
                   </div>
@@ -422,7 +424,7 @@ function LandingPage(props) {
                     />
                   </div>
                   <button
-                    id="editTodoBtn"
+                    id="editTaskBtn"
                     type="button"
                     className="mx-auto mt-16"
                     onClick={handleEditTask}

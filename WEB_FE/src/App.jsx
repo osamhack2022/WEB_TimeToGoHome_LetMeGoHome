@@ -16,6 +16,8 @@ export default function App() {
     discharge: "",
   });
 
+  const [error, setError] = useState({ code: undefined, msg: "", at: "" });
+
   const Login = (details) => {
     const { email: userEmail, password: userPassword } = details;
     axios
@@ -23,7 +25,11 @@ export default function App() {
       .catch((err) => {
         if (err.response.status === 400) {
           // eslint-disable-next-line no-alert
-          alert("아이디 또는 비밀번호가 틀렸습니다.");
+          setError({
+            code: err.response.status,
+            msg: "아이디 또는 비밀번호가 틀렸습니다.",
+            at: "Login",
+          });
         }
       })
       .then((response) => {
@@ -33,6 +39,11 @@ export default function App() {
           setUser({ ...res.data.payload });
           localStorage.setItem("user", JSON.stringify(res.data));
           localStorage.setItem("token", response.data.payload.token);
+        });
+        setError({
+          code: undefined,
+          msg: "",
+          at: "",
         });
       });
   };
@@ -59,7 +70,13 @@ export default function App() {
           setUser(foundUser);
         }
       }, [])}
-      <Router user={user} setUser={setUser} Login={Login} Logout={Logout} />
+      <Router
+        user={user}
+        error={error}
+        setUser={setUser}
+        Login={Login}
+        Logout={Logout}
+      />
     </div>
   );
 }
