@@ -21,7 +21,8 @@ import EditBtnImg from "../images/Edit_fill.png";
 import CheckBtnImg from "../images/Verified.png";
 
 function LandingPage({ user, Logout }) {
-  axios.defaults.headers.common["x-access-token"] = localStorage.getItem('token');  // setting token to axios header
+  axios.defaults.headers.common["x-access-token"] =
+    localStorage.getItem("token"); // setting token to axios header
   const [todoLists, setTodolists] = useState([
     {
       id: 350,
@@ -88,19 +89,24 @@ function LandingPage({ user, Logout }) {
       setCurrentList(response.data.payload[0]);
     });
   }, []);
-  
+
   // getting tasks
   useEffect(() => {
     axios
-    .get("/api/todo/task", {params:{todoId: currentList.id, date: dayjs(date).format("YYYY-MM-DD")}})
-    .then((response) => {
-      console.log(currentList)
-      setTaskList(response.data.payload);
-    })
-    .catch((err) => {
-      console.log(err);
-      setTaskList(dummyTasklist);
-    });
+      .get("/api/todo/task", {
+        params: {
+          todoId: currentList.id,
+          date: dayjs(date).format("YYYY-MM-DD"),
+        },
+      })
+      .then((response) => {
+        console.log(currentList);
+        setTaskList(response.data.payload);
+      })
+      .catch((err) => {
+        console.log(err);
+        setTaskList(dummyTasklist);
+      });
   }, [currentList, date]);
   // <-------------------axios get request-------------------->
   const submitHandler = () => {
@@ -238,7 +244,7 @@ function LandingPage({ user, Logout }) {
           </div>
           <div
             id="addTodoListButton"
-            className="flex flex-row content-between basis-1/6"
+            className="flex flex-col justify-between basis-1/6"
           >
             <button
               type="button"
@@ -257,6 +263,9 @@ function LandingPage({ user, Logout }) {
                 TODOLIST 추가
               </label>
             </button>
+            <a className="font-StrongAF hover:border-slate-800 hover:border-b-2" href="./share">
+              다른 TODOLIST 보러가기
+            </a>
           </div>
         </div>
 
@@ -291,7 +300,10 @@ function LandingPage({ user, Logout }) {
                     {option.content}
                   </label>
                   <div className="ml-3 peer-checked:text-gray-400">
-                    <label className="font-StrongAF" htmlFor={`task${option.id}`}>
+                    <label
+                      className="font-StrongAF"
+                      htmlFor={`task${option.id}`}
+                    >
                       {dayjs(option.datetime).format("YYYY-MM-DD HH:mm")}
                     </label>
                     <button
@@ -320,8 +332,9 @@ function LandingPage({ user, Logout }) {
                         setEdit(option.content);
                         document.getElementById("input_task_edit").value =
                           option.content;
-                        document.getElementById("edit_time").value =
-                          dayjs(option.datetime).format("HH:mm");
+                        document.getElementById("edit_time").value = dayjs(
+                          option.datetime
+                        ).format("HH:mm");
                       }}
                     >
                       <img

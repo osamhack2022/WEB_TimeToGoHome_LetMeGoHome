@@ -5,6 +5,7 @@
 /* eslint-disable react/no-unknown-property */
 import "./App.css";
 import { useState, useEffect } from "react";
+import { useNavigate } from "react-router-dom";
 import axios from "axios";
 import Router from "./routers/router";
 import LoginForm from "./container/LoginForm";
@@ -59,11 +60,11 @@ export default function App() {
       })
       .then((response) => {
         if (response.status === 200) {
-          axios.defaults.headers.common["x-access-token"] = response.data.token; // setting token to axios header
+          axios.defaults.headers.common["x-access-token"] = response.data.payload.token; // setting token to axios header
           console.log("Logged In!!!");
           axios.get("/api/user/me").then((res) => {
-            console.log("from app.jsx", res.data.data);
-            setUser({ ...res.data.data});
+            console.log("from app.jsx", res.data.payload);
+            setUser({ ...res.data.payload});
             // {
             //   id: res.data.id,
             //   email: res.data.email,
@@ -73,14 +74,15 @@ export default function App() {
             //   enlistment: res.data.enlistment,
             //   discharge: res.data.discharge,
             // });
-            localStorage.setItem("user", JSON.stringify(res.data));
-            localStorage.setItem('token', response.data.token);
+            localStorage.setItem("user", JSON.stringify(res.data.payload));
+            localStorage.setItem('token', response.data.payload.token);
           });
         } else {
           alert("details do not match");
         }
       });
   };
+  // const navigate = useNavigate();
   const Logout = () => {
     console.log("Logout");
     setUser({
@@ -93,6 +95,7 @@ export default function App() {
       discharge: "",
     });
     localStorage.clear();
+    // navigate("/");
   };
 
   return (
