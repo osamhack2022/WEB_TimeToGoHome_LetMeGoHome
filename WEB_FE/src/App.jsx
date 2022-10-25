@@ -2,8 +2,6 @@ import React, { useState, useEffect, createContext } from "react";
 import axios from "./utils/axios.util";
 import Router from "./routers/router";
 import "./App.css";
-import LoginForm from "./container/LoginForm";
-import RegisterForm from "./container/RegisterForm";
 
 export default function App() {
   const [user, setUser] = useState({
