@@ -17,7 +17,6 @@ export default function App() {
   const [error, setError] = useState({ code: undefined, msg: "", at: "" });
 
   const Login = (details) => {
-    const { email: userEmail, password: userPassword } = details;
     axios
       .post("/api/auth/login", details)
       .catch((err) => {
@@ -30,13 +29,13 @@ export default function App() {
           });
         }
       })
-      .then((response) => {
+      .then((res) => {
+        localStorage.setItem("token", res.data.payload.token);
         axios.defaults.headers.common["x-access-token"] =
-          response.data.payload.token; // setting token to axios header
-        axios.get("/api/user/me").then((res) => {
-          setUser({ ...res.data.payload });
-          localStorage.setItem("user", JSON.stringify(res.data));
-          localStorage.setItem("token", response.data.payload.token);
+          res.data.payload.token; // setting token to axios header
+        axios.get("/api/user/me").then((response) => {
+          setUser({ ...response.data.payload });
+          localStorage.setItem("user", JSON.stringify(response.data.payload));
         });
         setError({
           code: undefined,

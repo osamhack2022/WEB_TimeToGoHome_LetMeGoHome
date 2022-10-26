@@ -161,12 +161,13 @@ function LandingPage(props) {
       </nav>
       <div className="flex flex-row">
         <div className="flex flex-col items-center justify-center h-[91.5vh] w-[17%] bg-white">
-          <h1 className="xl:text-4xl md:text-2xl text-xl font-StrongAF mt-6">
-            강력한
+          <h1 className="xl:text-4xl md:text-1xl text-xl font-StrongAF mt-6">
+            {user.armyType} {user.armyRank}
           </h1>
           <h1 className="xl:text-4xl md:text-2xl text-xl font-StrongAF">
             {user.name}
           </h1>
+          <img src={user.image} alt="profile" />
           <div className="grow flex flex-col justify-center w-full">
             {todoLists.map((option) => (
               <button
@@ -467,6 +468,7 @@ LandingPage.propTypes = {
     armyRank: PropTypes.string.isRequired,
     enlistment: PropTypes.string.isRequired,
     discharge: PropTypes.string.isRequired,
+    image: PropTypes.string.isRequired,
   }).isRequired,
   setUser: PropTypes.func.isRequired,
   Logout: PropTypes.func.isRequired,
