@@ -1,31 +1,10 @@
 import express from "express";
 import { Prisma, PrismaClient } from "@prisma/client";
 import { verifyToken } from "../../middleware/verifyToken.js";
-import multer from "multer";
-import path from "path";
-//import { upload } from "../../middleware/multer.js";
-
-const upload = multer({
-  storage: multer.diskStorage({
-    // 저장한공간 정보 : 하드디스크에 저장
-    destination(req, file, done) {
-      // 저장 위치
-      done(null, "uploads/"); // uploads라는 폴더 안에 저장
-    },
-    filename(req, file, done) {
-      // 파일명을 어떤 이름으로 올릴지
-      const ext = path.extname(file.originalname); // 파일의 확장자
-      done(null, path.basename(file.originalname, ext) + Date.now() + ext); // 파일이름 + 날짜 + 확장자 이름으로 저장
-    },
-  }),
-  limits: { fileSize: 5 * 1024 * 1024 }, // 5메가로 용량 제한
-}).single("image");
 
 const prisma = new PrismaClient();
 const router = express.Router();
 
-<<<<<<< HEAD
-=======
 router.get("/", verifyToken, async (req, res) => {
   const shareId = Number(req.query.id);
   const { tag } = req.query;
@@ -56,7 +35,6 @@ router.get("/", verifyToken, async (req, res) => {
   }
 });
 
->>>>>>> e8076bb (fix(back): resolve some api bugs)
 router.post("/update", verifyToken, async (req, res) => {
   try {
     const { id: shareId, title, description, image, hashtag } = req.body;
@@ -149,63 +127,6 @@ router.get("/tags", verifyToken, async (req, res) => {
       message: "Error",
     });
   }
-<<<<<<< HEAD
-});
-
-router.post("/upload", verifyToken, async (req, res) => {
-  upload(req, res, function (err) {
-    if (err instanceof multer.MulterError) {
-      return res.status(500).json({
-        code: 500,
-        message: err,
-      });
-      // A Multer error occurred when uploading.
-    } else if (err) {
-      return res.status(500).json({
-        code: 500,
-        message: err,
-      });
-    }
-    if (req.file === undefined) {
-      return res.status(400).json({
-        code: 400,
-        message: "파일이 없습니다.",
-      });
-    }
-    return res.status(200).json({ code: 200, payload: { success: true } });
-  });
-});
-
-router.get("/", verifyToken, async (req, res) => {
-  const shareId = Number(req.query.id);
-  const { tag } = req.query;
-  if (tag) {
-    const share = await prisma.share.findMany({
-      orderBy: {
-        hit: "desc",
-      },
-      where: {
-        hashtag: {
-          contains: tag,
-        },
-      },
-    });
-    return res.status(200).json({ code: 200, payload: share });
-  } else if (shareId) {
-    const data = await prisma.share.findFirst({
-      where: { id: shareId },
-    });
-    return res.status(200).json({ code: 200, payload: data });
-  } else {
-    const share = await prisma.share.findMany({
-      orderBy: {
-        hit: "desc",
-      },
-    });
-    return res.status(200).json({ code: 200, payload: share });
-  }
-=======
->>>>>>> e8076bb (fix(back): resolve some api bugs)
 });
 
 export default router;

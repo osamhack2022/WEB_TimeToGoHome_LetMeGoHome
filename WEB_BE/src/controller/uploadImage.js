@@ -14,7 +14,7 @@ cloudinary.config({
   secure: true,
 });
 
-const Types = Object.freeze({
+const imgTypes = Object.freeze({
   PROFILE: Symbol(0),
   SHARE: Symbol(1),
 });
@@ -27,11 +27,11 @@ const uploadImage = async (image_path, type) => {
     folder: "time_to_go_home/",
     foramt: "png",
   };
-  if (type === Types.PROFILE) {
+  if (type === imgTypes.PROFILE) {
     options.width = 250;
     options.height = 250;
     options.folder += "profile/";
-  } else if (type === Types.SHARE) {
+  } else if (type === imgTypes.SHARE) {
     options.width = 1200;
     options.height = 600;
     options.folder += "share/";
@@ -46,6 +46,4 @@ const uploadImage = async (image_path, type) => {
   }
 };
 
-console.log(await uploadImage("./temp/test.jpg", Types.PROFILE));
-
-export { Types, uploadImage };
+export { imgTypes, uploadImage };
