@@ -10,6 +10,12 @@ router.get("/", verifyToken, async (req, res) => {
   try {
     const { date } = req.query;
     const todoId = Number(req.query.todoId);
+    if (!todoId) {
+      return res.status(400).json({
+        code: 400,
+        message: "올바르지 않은 TODOLIST ID입니다.",
+      });
+    }
     const tasks = await prisma.task.findMany({
       where: {
         todoId,
