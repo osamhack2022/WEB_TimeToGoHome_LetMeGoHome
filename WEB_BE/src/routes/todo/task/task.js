@@ -1,7 +1,7 @@
 import express from "express";
 const router = express.Router();
 import { Prisma, PrismaClient } from "@prisma/client";
-import { verifyToken } from "../../../verifyToken.js";
+import { verifyToken } from "../../../middleware/verifyToken.js";
 const prisma = new PrismaClient();
 
 const DAY = 1000 * 60 * 60 * 24;
@@ -10,6 +10,12 @@ router.get("/", verifyToken, async (req, res) => {
   try {
     const { date } = req.query;
     const todoId = Number(req.query.todoId);
+    if (!todoId) {
+      return res.status(400).json({
+        code: 400,
+        message: "올바르지 않은 TODOLIST ID입니다.",
+      });
+    }
     const tasks = await prisma.task.findMany({
       where: {
         todoId,

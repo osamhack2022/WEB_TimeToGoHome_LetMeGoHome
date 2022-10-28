@@ -2,6 +2,9 @@ import express from "express";
 import { Prisma, PrismaClient } from "@prisma/client";
 import bcrypt from "bcrypt";
 import jwt from "jsonwebtoken";
+import fs from "fs";
+import downImage from "../../middleware/downImage.js";
+import { uploadImage, imgTypes } from "../../controller/uploadImage.js";
 
 const prisma = new PrismaClient();
 const router = express.Router();
@@ -39,22 +42,34 @@ router.post("/login", async (req, res) => {
   });
 });
 
-router.post("/register", async (req, res) => {
-  //password 암호화
-  const salt = 10;
-  const enpassword = await bcrypt.hash(req.body.password, salt);
-
+router.post("/register", downImage.single("profileImage"), async (req, res) => {
+  let profileImageFile;
   try {
+    const { name, email, armyType, armyRank, enlistment, discharge } = req.body;
+    //password 암호화
+    const salt = 10;
+    const enpassword = await bcrypt.hash(req.body.password, salt);
+    if (!req.file) {
+      return res.status(500).json({
+        code: 500,
+        message: "프로필 이미지를 업로드할 수 없습니다.",
+      });
+    }
+    profileImageFile = req.file;
+    const profileImageUrl = await uploadImage(
+      profileImageFile.path,
+      imgTypes.PROFILE
+    );
     const data = await prisma.user.create({
       data: {
-        name: req.body.name,
-        email: req.body.email,
+        name,
+        email,
         password: enpassword,
-        armyType: req.body.armyType,
-        armyRank: req.body.armyRank,
-        enlistment: new Date(req.body.enlistment),
-        discharge: new Date(req.body.discharge),
-        image: "https://i.imgur.com/3ZQ3Z0x.png", // sample image
+        armyType,
+        armyRank,
+        enlistment: new Date(enlistment),
+        discharge: new Date(discharge),
+        image: profileImageUrl,
       },
     });
     delete data["password"];
@@ -62,6 +77,7 @@ router.post("/register", async (req, res) => {
       .status(200)
       .json({ code: 200, payload: data, message: "회원가입되었습니다." });
   } catch (error) {
+    console.error(error);
     if (error instanceof Prisma.PrismaClientKnownRequestError) {
       console.error(error);
       if (error.code === "P2002") {
@@ -69,7 +85,6 @@ router.post("/register", async (req, res) => {
           // email 찾기
           where: { email: req.body.email },
         });
-
         if (!email || email.status === "DELETED") {
           // 만약 존재하지 않거나 DELETED 상태면 패스
           return res
@@ -85,7 +100,15 @@ router.post("/register", async (req, res) => {
           .status(400)
           .json({ code: 400, message: "너무 긴 입력 값이 있습니다." });
       }
+    } else {
+      return res.status(500).json({ code: 500, message: "Error" });
     }
+  } finally {
+    fs.unlink(profileImageFile.path, (error) => {
+      if (error) {
+        console.error(error);
+      }
+    });
   }
 });
 
