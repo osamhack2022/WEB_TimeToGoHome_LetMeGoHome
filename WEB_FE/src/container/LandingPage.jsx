@@ -23,7 +23,7 @@ function LandingPage(props) {
   const [time, setTime] = useState("");
   const [date, setDate] = useState(new Date()); // 날짜 for calendar
   const [task, setTask] = useState({
-    todoId: undefined,
+    id: undefined,
     content: "",
     datetime: "",
     isDone: false, // 체크박스
@@ -118,7 +118,6 @@ function LandingPage(props) {
     const nextTask = { ...task };
     nextTask.todoId = currentList.id;
     setTask(nextTask);
-    console.log(nextTask);
 
     axios.post("/api/todo/task/create", nextTask).then((response) => {});
 
@@ -129,6 +128,13 @@ function LandingPage(props) {
     document.getElementById("input_time").value = "";
   }
 
+  function handleDelTodo(id) {
+    axios.post("/api/todo/delete", { id }).then((response) => {});
+    const newTodoList = todoLists.filter((todoItem) => todoItem.id !== id);
+    setTodolists(newTodoList);
+    document.getElementById("delTodoModal").style.display = "none";
+  }
+
   function handleAddTodo(e) {
     e.preventDefault();
     if (!todo.goal) {
@@ -136,7 +142,6 @@ function LandingPage(props) {
       alert("목표를 입력해주세요!");
       return;
     }
-    // console.log(todo);
     if (!todo.start) {
       // eslint-disable-next-line no-alert
       alert("시작일을 입력해주세요!");
@@ -175,20 +180,14 @@ function LandingPage(props) {
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [editTask, date, time]);
 
-  function handleEditTask(e) {
+  const handleEditTask = (e) => {
     e.preventDefault();
     if (!editTask) {
       // eslint-disable-next-line no-alert
       alert("수정 할 일을 입력해주세요!");
       return;
     }
-    const isTaskInList = taskList.some(
-      (taskItem) =>
-        taskItem.content.toLowerCase().replace(/\s/g, "") ===
-          task.content.toLowerCase().replace(/\s/g, "") &&
-        taskItem.datetime === task.datetime
-    );
-    const newTaskList = taskList;
+    const newTaskList = [...taskList];
     for (let i = 0; i < Object.keys(newTaskList).length; i += 1) {
       if (newTaskList[i].id === task.id) {
         newTaskList[i].content = task.content;
@@ -199,13 +198,11 @@ function LandingPage(props) {
     }
 
     const nextTask = { ...task };
-    nextTask.todoId = currentList.id;
     handleUpdateTask(nextTask);
     setTime("");
-    console.log(newTaskList);
     setTaskList(newTaskList);
     document.getElementById("editTaskModal").style.display = "none";
-  }
+  };
 
   function deleteTask(id) {
     const newTaskList = taskList.filter((TASK, i) => TASK.id !== id);
@@ -278,6 +275,20 @@ function LandingPage(props) {
             id="addTodoListButton"
             className="flex flex-row content-between basis-1/6"
           >
+            <button
+              id="add-todolist-btn"
+              type="button"
+              className="flex flex-row items-center justify-center w-[80%] h-[50px] bg-white rounded-md mt-2"
+              onClick={() => {
+                document.getElementById("delTodoModal").style.display = "block";
+              }}
+            >
+              <img
+                src={TrashImg}
+                alt="add todolist"
+                className="w-12 h-12 mr-2 mb-8"
+              />
+            </button>
             <button
               id="add-todolist-btn"
               type="button"
@@ -400,6 +411,45 @@ function LandingPage(props) {
                   type="button"
                   className="mx-auto w-[60px] h-[60px] mt-16"
                   onClick={handleAddTodo}
+                >
+                  <img src={AddTask} alt="Addtask" />
+                </button>
+              </div>
+            </div>
+          </div>
+
+          <div
+            id="delTodoModal"
+            className="modal bg-gray-700/30 hidden h-full overflow-auto fixed top-0 left-0 w-full z-10"
+          >
+            <div
+              className="modal-content bg-white border-solid mx-auto p-5 mt-[10%] 
+              mb-[15%] border-0 w-5/12 h-5/12 flex flex-col rounded-2xl shadow-[0_35px_60px_-15px_rgba(0,0,0,0.3)]"
+            >
+              <div className="flex flex-row items-center">
+                <h2 className="grow font-StrongAFBold text-3xl ml-5">
+                  TODOLIST 삭제
+                </h2>
+                <button
+                  className="order-last"
+                  type="button"
+                  onClick={(e) => {
+                    document.getElementById("delTodoModal").style.display =
+                      "none";
+                  }}
+                >
+                  <span className="close">&times;</span>
+                </button>
+              </div>
+              <div className="flex flex-col mt-12">
+                <span className="text-xl mx-auto font-semibold font-StrongAF">
+                  정말로 TODOLIST를 삭제하시겠습니까?
+                </span>
+                <button
+                  id="delTodoBtn"
+                  type="button"
+                  className="mx-auto w-[60px] h-[60px] mt-16"
+                  onClick={() => handleDelTodo(currentList.id)}
                 >
                   <img src={AddTask} alt="Addtask" />
                 </button>
