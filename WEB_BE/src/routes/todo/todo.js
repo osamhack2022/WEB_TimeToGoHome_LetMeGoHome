@@ -51,9 +51,10 @@ router.get("/", verifyToken, async (req, res) => {
 
 router.get("/me", verifyToken, async (req, res) => {
   try {
+    const userId = req.decoded.id;
     const todos = await prisma.todo.findMany({
       where: {
-        userId: 1, // TODO: 인증 기능 추가되면 수정할 것!
+        userId: userId,
       },
     });
     if (Object.keys(todos).length === 0) {
@@ -77,6 +78,7 @@ router.get("/me", verifyToken, async (req, res) => {
 
 router.post("/create", verifyToken, async (req, res) => {
   try {
+    const userId = req.decoded.id;
     const { goal } = req.body;
     let start, end, duration;
     if (req.body.start && req.body.end) {
@@ -85,7 +87,7 @@ router.post("/create", verifyToken, async (req, res) => {
       duration = new Date(
         (end.getTime() - start.getTime() + DAY) / (7 * DAY)
       ).getTime();
-    } else if (req.body.start || req.body.end) {
+    } else {
       return res.status(400).json({
         code: 400,
         message: "start와 end를 모두 포함하여 요청바랍니다.",
@@ -93,7 +95,7 @@ router.post("/create", verifyToken, async (req, res) => {
     }
     const todo = await prisma.todo.create({
       data: {
-        userId: 1, // TODO: 인증 기능 추가되면 수정할 것!
+        userId,
         goal,
         duration,
         start,
@@ -205,6 +207,7 @@ router.post("/delete", verifyToken, async (req, res) => {
 
 router.post("/clone", verifyToken, async (req, res) => {
   try {
+    const userId = req.decoded.id;
     const { id: todoId } = req.body;
     let start, end, duration, day_diff;
     const todo = await prisma.todo.findUnique({
@@ -242,7 +245,7 @@ router.post("/clone", verifyToken, async (req, res) => {
     }
     const newTodo = await prisma.todo.create({
       data: {
-        userId: 1, // TODO: 인증 기능 추가되면 수정할 것!
+        userId,
         goal: todo.goal,
         duration,
         start,
@@ -352,7 +355,7 @@ router.post(
           isShared: true,
         },
       });
-      return res.json({
+      return res.status(201).json({
         code: 201,
         payload: {
           todo,

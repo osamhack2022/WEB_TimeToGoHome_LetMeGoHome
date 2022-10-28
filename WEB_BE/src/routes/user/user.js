@@ -11,6 +11,7 @@ router.get("/me", verifyToken, async (req, res) => {
   const data = await prisma.user.findFirst({
     where: { id: userId },
   });
+  delete data["password"];
   return res.status(200).json({ code: 200, payload: data });
 });
 
