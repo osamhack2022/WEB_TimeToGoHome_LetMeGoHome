@@ -92,9 +92,9 @@ function LoginForm(props) {
 LoginForm.propTypes = {
   Login: PropTypes.func.isRequired,
   error: PropTypes.shape({
-    code: PropTypes.number.isRequired,
+    code: PropTypes.number,
     msg: PropTypes.string,
-    at: PropTypes.string.isRequired,
+    at: PropTypes.string,
   }).isRequired,
 };
 

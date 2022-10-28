@@ -18,26 +18,14 @@ function LandingPage(props) {
   const [currentList, setCurrentList] = useState([]);
   const [inputTask, setInputTask] = useState("");
   const [editTask, setEditTask] = useState("");
+  const [inputTitle, setInputTitle] = useState("");
   const [time, setTime] = useState("");
   const [date, setDate] = useState(new Date()); // 날짜 for calendar
   const [task, setTask] = useState({ id: "", content: "", datetime: "" }); // calendar에서 선택한 날짜의 task들을 저장하는 state
+  const [share, setShare] = useState({});
   const [taskList, setTaskList] = useState([]); // calendar에서 선택한 날짜의 task들을 저장하는 state
 
   // <-------------------axios get request-------------------->
-  // getting todolists
-  useEffect(() => {
-    axios.get("/api/user/me").then((response) => {
-      setUser({ ...response.data.payload });
-    });
-    // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, []);
-  useEffect(() => {
-    axios.get("/api/todo/me").then((response) => {
-      setTodolists(response.data.payload);
-      setCurrentList(response.data.payload[0]);
-    });
-  }, []);
-  // getting tasks
   useEffect(() => {
     axios
       .get("/api/todo/task", {
@@ -51,6 +39,18 @@ function LandingPage(props) {
       })
       .catch((err) => {});
   }, [currentList, date]);
+
+  // getting todolists
+  useEffect(() => {
+    axios.get("/api/user/me").then((response) => {
+      setUser({ ...response.data.payload });
+    });
+    // getting tasks
+    axios.get("/api/todo/me").then((response) => {
+      setTodolists(response.data.payload);
+      setCurrentList(response.data.payload[0]);
+    });
+  }, []);
   // <-------------------axios get request-------------------->
 
   const taskSubmitHandler = () => {
@@ -145,6 +145,26 @@ function LandingPage(props) {
     setTaskList(newTaskList);
   }
 
+  const handleShareTodo = (e) => {
+    e.preventDefault();
+    let formData = new FormData();
+    formData.append("todoId", String(currentList.id));
+    for (const key in share) {
+      formData.append(key, share[key]);
+    }
+    axios
+      .post("/api/todo/share", formData)
+      .then((res) => {
+        alert("공유가 완료되었습니다.");
+      })
+      .catch((err) => {
+        alert("공유에 실패했습니다.");
+      })
+      .finally(() => {
+        document.getElementById("shareTodoModal").style.display = "none";
+      });
+  };
+
   return (
     <div>
       <nav className="bg-primary h-20 flex items-center justify-between">
@@ -197,15 +217,24 @@ function LandingPage(props) {
             >
               <img
                 src={AddTodo}
-                alt="add-todolist"
+                alt="add todolist"
                 className="w-12 h-12 mr-2 mb-8"
               />
-              <b
-                htmlFor="add-todolist-btn"
-                className="lg:text-2xl md:text-xl sm:text-base text-sm font-StrongAFBold hover:border-b-2 hover:border-slate-800 cursor-pointer"
-              >
-                TODOLIST 추가
-              </b>
+            </button>
+            <button
+              id="share-todolist-btn"
+              type="button"
+              onClick={(e) => {
+                document.getElementById("shareTodoModal").style.display =
+                  "block";
+              }}
+              className="flex flex-row items-center justify-center w-[80%] h-[50px] bg-white rounded-md mt-2"
+            >
+              <img
+                src={AddTodo} // TODO: share 버튼 이미지로 교체할 것
+                alt="share todolist"
+                className="w-12 h-12 mr-2 mb-8"
+              />
             </button>
           </div>
         </div>
@@ -253,7 +282,7 @@ function LandingPage(props) {
                     >
                       <img
                         src={TrashImg}
-                        alt="trash"
+                        alt="trash task"
                         className="w-6 h-6 mt-auto"
                       />
                     </button>
@@ -279,7 +308,7 @@ function LandingPage(props) {
                     >
                       <img
                         src={EditBtnImg}
-                        alt="trash"
+                        alt="edit task"
                         className="w-6 h-6 mt-auto"
                       />
                     </button>
@@ -298,6 +327,117 @@ function LandingPage(props) {
               >
                 <img src={AddTaskListImg} alt="AddTask" />
               </button>
+            </div>
+
+            {/* Todo 공유 모달창 */}
+            <div
+              id="shareTodoModal"
+              className="modal bg-gray-700/30 hidden h-full overflow-auto fixed top-0 left-0 w-full z-10"
+            >
+              <div
+                className="modal-content bg-white border-solid mx-auto p-5 mt-[10%] 
+              mb-[15%] border-0 w-5/12 h-5/12 flex flex-col rounded-2xl shadow-[0_35px_60px_-15px_rgba(0,0,0,0.3)]"
+              >
+                <div className="flex flex-row items-center">
+                  <h2 className="grow font-StrongAFBold text-3xl ml-5">
+                    TODOLIST 공유
+                  </h2>
+
+                  <button
+                    className="order-last"
+                    type="button"
+                    onClick={(e) => {
+                      document.getElementById("shareTodoModal").style.display =
+                        "none";
+                    }}
+                  >
+                    <span className="close">&times;</span>
+                  </button>
+                </div>
+                <div className="flex flex-col mt-12">
+                  <span className="text-xl mx-auto font-semibold font-StrongAF">
+                    당신의 TODOLIST를 공유하세요!
+                  </span>
+                  <form
+                    encType="multipart/form-data"
+                    onSubmit={handleShareTodo}
+                  >
+                    <div className="flex justify-center">
+                      <input
+                        id="input_title"
+                        className="w-4/6 h-12 border-2 border-gray-300 rounded-lg mt-5 p-5 font-StrongAF"
+                        type="text"
+                        placeholder="제목을 적어주세요"
+                        onChange={(e) => {
+                          const nextShare = { ...share };
+                          nextShare.title = e.target.value;
+                          setShare(nextShare);
+                        }}
+                      />
+                    </div>
+                    <div className="flex justify-center">
+                      <input
+                        id="input_desc"
+                        className="w-4/6 h-12 border-2 border-gray-300 rounded-lg mt-5 p-5 font-StrongAF"
+                        type="text"
+                        placeholder="설명을 적어주세요"
+                        onChange={(e) => {
+                          const nextShare = { ...share };
+                          nextShare.desc = e.target.value;
+                          setShare(nextShare);
+                        }}
+                      />
+                    </div>
+                    <div className="flex justify-center">
+                      <div className="w-4/6 h-12 border-2 border-gray-300 rounded-lg mt-5 p-5 font-StrongAF">
+                        <label
+                          htmlFor="share-image-input"
+                          className="text-gray-400"
+                          style={{ position: "relative", top: "-0.6rem" }}
+                        >
+                          {share.shareImage ? "" : "대표사진을 올려주세요"}
+                          <span className="italic text-black">
+                            {share.shareImage ? share.shareImage.name : ""}
+                          </span>
+                          <input
+                            id="share-image-input"
+                            name="profile-image"
+                            type="file"
+                            style={{ display: "none" }}
+                            accept="image/*"
+                            onChange={(e) => {
+                              const nextShare = { ...share };
+                              // eslint-disable-next-line prefer-destructuring
+                              nextShare.shareImage = e.target.files[0];
+                              setShare(nextShare);
+                            }}
+                          />
+                        </label>
+                      </div>
+                    </div>
+                    <div className="flex justify-center">
+                      <input
+                        id="input_hashtag"
+                        className="w-4/6 h-12 border-2 border-gray-300 rounded-lg mt-5 p-5 font-StrongAF"
+                        type="text"
+                        placeholder="태그를 적어주세요"
+                        onChange={(e) => {
+                          const nextShare = { ...share };
+                          nextShare.hashtag = e.target.value;
+                          setShare(nextShare);
+                        }}
+                      />
+                    </div>
+                    <button
+                      id="shareTodoBtn"
+                      type="submit"
+                      className="mx-auto w-[60px] h-[60px] mt-16"
+                    >
+                      <img src={AddTask} alt="share todolist button" />
+                    </button>
+                  </form>
+                </div>
+              </div>
             </div>
 
             {/* Task 작성 모달창 */}
@@ -461,7 +601,7 @@ function LandingPage(props) {
 
 LandingPage.propTypes = {
   user: PropTypes.shape({
-    id: PropTypes.string.isRequired,
+    id: PropTypes.number.isRequired,
     email: PropTypes.string.isRequired,
     name: PropTypes.string.isRequired,
     armyType: PropTypes.string.isRequired,
