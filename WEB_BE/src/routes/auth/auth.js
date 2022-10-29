@@ -10,36 +10,44 @@ const prisma = new PrismaClient();
 const router = express.Router();
 
 router.post("/login", async (req, res) => {
-  const { email, password } = req.body;
-  const data = await prisma.user.findFirst({
-    // email 찾기
-    where: { email },
-  });
-  if (!data || data.status === "DELETED") {
-    // 만약 존재하지 않거나 DELETED 상태면 error
-    return res.status(400).json({
-      code: 400,
-      message: "이메일 혹은 비밀번호가 일치하지 않습니다.",
+  try {
+    const { email, password } = req.body;
+    const data = await prisma.user.findFirst({
+      // email 찾기
+      where: { email },
+    });
+    if (!data || data.status === "DELETED") {
+      // 만약 존재하지 않거나 DELETED 상태면 error
+      return res.status(400).json({
+        code: 400,
+        message: "이메일 혹은 비밀번호가 일치하지 않습니다.",
+      });
+    }
+    // 존재하면 비밀번호 확인
+    const result = await bcrypt.compare(password, data.password);
+    if (!result) {
+      // 비밀번호가 틀리면 error
+      return res.status(400).json({
+        code: 400,
+        message: "이메일 혹은 비밀번호가 일치하지 않습니다.",
+      });
+    }
+    const token = jwt.sign({ id: data.id }, process.env.JWT_SECRET, {
+      expiresIn: "30m",
+    });
+    // 비밀번호가 맞으면 로그인 및 토큰 발급
+    return res.status(200).json({
+      code: 200,
+      payload: { token },
+      message: "로그인 되었습니다.",
+    });
+  } catch (error) {
+    console.error(error);
+    return res.status(500).json({
+      code: 500,
+      message: "Error",
     });
   }
-  // 존재하면 비밀번호 확인
-  const result = await bcrypt.compare(password, data.password);
-  if (!result) {
-    // 비밀번호가 틀리면 error
-    return res.status(400).json({
-      code: 400,
-      message: "이메일 혹은 비밀번호가 일치하지 않습니다.",
-    });
-  }
-  const token = jwt.sign({ id: data.id }, process.env.JWT_SECRET, {
-    expiresIn: "30m",
-  });
-  // 비밀번호가 맞으면 로그인 및 토큰 발급
-  return res.status(200).json({
-    code: 200,
-    payload: { token },
-    message: "로그인 되었습니다.",
-  });
 });
 
 router.post("/register", downImage.single("profileImage"), async (req, res) => {
