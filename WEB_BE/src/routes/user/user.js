@@ -29,7 +29,7 @@ router.post("/update", verifyToken, async (req, res) => {
       if (data[key] === undefined || data[key] === NaN) {
         delete data[key];
       } else if (key === "password") {
-        data[key] = await bcrypt.hash(data[key], 10);
+        data[key] = await bcrypt.hashSync(data[key], 10);
       }
     }
     if (Object.keys(data).length === 0) {

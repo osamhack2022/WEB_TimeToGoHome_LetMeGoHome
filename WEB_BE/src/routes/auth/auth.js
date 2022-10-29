@@ -48,7 +48,7 @@ router.post("/register", downImage.single("profileImage"), async (req, res) => {
     const { name, email, armyType, armyRank, enlistment, discharge } = req.body;
     //password 암호화
     const salt = 10;
-    const enpassword = await bcrypt.hash(req.body.password, salt);
+    const enpassword = await bcrypt.hashSync(req.body.password, salt);
     if (!req.file) {
       return res.status(500).json({
         code: 500,
