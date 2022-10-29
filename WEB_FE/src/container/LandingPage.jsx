@@ -212,8 +212,9 @@ function LandingPage(props) {
 
   const handleShareTodo = (e) => {
     e.preventDefault();
-    let formData = new FormData();
+    const formData = new FormData();
     formData.append("todoId", String(currentList.id));
+    // eslint-disable-next-line no-restricted-syntax, guard-for-in
     for (const key in share) {
       formData.append(key, share[key]);
     }

@@ -1,8 +1,7 @@
 import axios from "axios";
 
 const instance = axios.create({
-  baseURL: "https://petercode.kro.kr/",
-  // baseURL: "http://localhost:5000",
+  baseURL: "https://timetogohome.kro.kr",
 });
 
 instance.defaults.headers.common["x-access-token"] =

@@ -27,6 +27,7 @@ function RegisterForm() {
 
   const Register = () => {
     const formData = new FormData();
+    // eslint-disable-next-line no-restricted-syntax, guard-for-in
     for (const key in details) {
       formData.append(key, details[key]);
     }
