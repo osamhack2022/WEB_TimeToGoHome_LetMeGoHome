@@ -1,13 +1,11 @@
-/* eslint-disable jsx-a11y/no-noninteractive-element-interactions */
-/* eslint-disable jsx-a11y/click-events-have-key-events */
-// eslint-disable-next-line import/no-absolute-path
 import React, { useState } from "react";
-import axios from "axios";
+import PropTypes from "prop-types";
+import axios from "../utils/axios.util";
 import eye from "../images/eye.png";
 import eyeSlash from "../images/eyeSlash.png";
 
-// eslint-disable-next-line react/prop-types
-function LoginForm({ Login, error }) {
+function LoginForm(props) {
+  const { Login, error } = props;
   const [details, setDetails] = useState({ email: "", password: "" });
   const [eyeImage, setEye] = useState(eyeSlash);
 
@@ -27,10 +25,13 @@ function LoginForm({ Login, error }) {
   }
 
   return (
-    <div>
-      <span className="logo">이젠 돌아갈 때</span>
-      <form onSubmit={submitHandler} className="relative h-screen flex flex-row-reverse">
-        <div className="relative bg-white lg:w-[45%] w-screen flex-wrap rounded-l-2xl mb-5 mt-6 flex-col content-between">
+    <div className="bg w-[100vw] h-[100vh] font-StrongAF">
+      <span className="logo font-StrongAFBold">이젠 돌아갈 때</span>
+      <form
+        onSubmit={submitHandler}
+        className="relative h-screen flex flex-row-reverse"
+      >
+        <div className="relative bg-white lg:w-[45%] w-screen flex-wrap rounded-l-3xl mb-5 mt-6 flex-col content-between">
           <div className="login-label">
             <span>Login</span>
           </div>
@@ -58,13 +59,15 @@ function LoginForm({ Login, error }) {
                 setDetails({ ...details, password: e.target.value })
               }
             />
-
-            <img
+            <div className="text-red-600">{error.msg}</div>
+            <button
+              type="button"
               className="absolute left-[482px] bottom-[7px]"
-              src={eyeImage}
-              alt="this ain't gonna work"
               onClick={switchImage}
-            />
+              onKeyPress={switchImage}
+            >
+              <img src={eyeImage} alt="click to show or hide password" />
+            </button>
           </div>
 
           <button
@@ -74,7 +77,7 @@ function LoginForm({ Login, error }) {
           >
             <span id="login-btn-text">Login</span>
           </button>
-          <span className="absolute left-[188px] top-[79vh] text-slate-300 text-bg">
+          <span className="absolute left-[168px] top-[79vh] text-slate-300 text-bg">
             Don&apos;t have an account?{" "}
             <a className="text-greenish" href="./register">
               Register
@@ -85,5 +88,14 @@ function LoginForm({ Login, error }) {
     </div>
   );
 }
+
+LoginForm.propTypes = {
+  Login: PropTypes.func.isRequired,
+  error: PropTypes.shape({
+    code: PropTypes.number,
+    msg: PropTypes.string,
+    at: PropTypes.string,
+  }).isRequired,
+};
 
 export default LoginForm;

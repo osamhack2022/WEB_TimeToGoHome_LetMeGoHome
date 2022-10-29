@@ -1,54 +1,65 @@
-/* eslint-disable no-console */
-/* eslint-disable react/no-unknown-property */
-import "./App.css";
-import { useState, useEffect } from "react";
-import axios from "axios";
+import React, { useState, useEffect, createContext } from "react";
+import axios from "./utils/axios.util";
 import Router from "./routers/router";
-import LoginForm from "./container/LoginForm";
-import RegisterForm from "./container/RegisterForm";
+import "./App.css";
 
 export default function App() {
-  const adminUser = {
-    email: "admin@admin.com",
-    pw: "admin123",
-    name: "Sean",
-    army_type: "공군",
-    army_rank: "일병",
-  };
+  const [user, setUser] = useState({
+    id: "",
+    email: "",
+    name: "",
+    armyType: "",
+    armyRank: "",
+    enlistment: "",
+    discharge: "",
+  });
 
-  const [user, setUser] = useState({ email: "", password: "" });
-  const [error, setError] = useState("");
+  const [error, setError] = useState({ code: undefined, msg: "", at: "" });
 
   const Login = (details) => {
-    // eslint-disable-next-line no-console
-
-    const { email: userEmail, password: userPassword } = details;
-
     axios
-      .post("/api/login", details)
-
-      .then((response) => {
-        // later on if statement will be done in backend, response contains user information
-        if (userEmail === adminUser.email && userPassword === adminUser.pw) {
-          console.log("Logged In!!!");
-          setUser(response.data);
-          localStorage.setItem("user", JSON.stringify(response.data));
-        } else {
-          console.log("details do not match");
+      .post("/api/auth/login", details)
+      .catch((err) => {
+        if (err.response.status === 400) {
+          // eslint-disable-next-line no-alert
+          setError({
+            code: err.response.status,
+            msg: "아이디 또는 비밀번호가 틀렸습니다.",
+            at: "Login",
+          });
         }
+      })
+      .then((res) => {
+        localStorage.setItem("token", res.data.payload.token);
+        axios.defaults.headers.common["x-access-token"] =
+          res.data.payload.token; // setting token to axios header
+        axios.get("/api/user/me").then((response) => {
+          setUser({ ...response.data.payload });
+          localStorage.setItem("user", JSON.stringify(response.data.payload));
+        });
+        setError({
+          code: undefined,
+          msg: "",
+          at: "",
+        });
       });
   };
+
   const Logout = () => {
-    console.log("Logout");
     setUser({
+      id: "",
       email: "",
-      password: "",
+      name: "",
+      armyType: "",
+      armyRank: "",
+      enlistment: "",
+      discharge: "",
     });
     localStorage.clear();
   };
 
   return (
-    <div className="bg">
+    <div>
       {useEffect(() => {
         const loggedInUser = localStorage.getItem("user");
         if (loggedInUser) {
@@ -58,10 +69,10 @@ export default function App() {
       }, [])}
       <Router
         user={user}
-        Logout={Logout}
-        Login={Login}
         error={error}
-        admin={adminUser}
+        setUser={setUser}
+        Login={Login}
+        Logout={Logout}
       />
     </div>
   );
