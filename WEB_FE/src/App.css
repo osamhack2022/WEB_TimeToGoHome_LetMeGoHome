@@ -1,0 +1,128 @@
+@font-face {
+  font-family: "StrongAF";
+  src: url("./fonts/강한공군체/ROKAF\ Slab\ Serif\ Medium.ttf");
+}
+@font-face {
+  font-family: "StrongAFBold";
+  src: url("./fonts/강한공군체/ROKAF\ Slab\ Serif\ Bold.ttf");
+}
+body,
+html {
+  position: relative;
+  width: 100vw;
+  height: 100vh;
+}
+.bg {
+  background: linear-gradient(
+      rgba(255, 255, 255, 0.5),
+      rgba(255, 255, 255, 0.5)
+    ),
+    url("./images/bg.jpg");
+  background-position: center;
+  background-repeat: no-repeat;
+  background-size: cover;
+}
+
+.logo {
+  position: absolute;
+  width: 802px;
+  height: 107px;
+  left: 148px;
+  top: 407px;
+
+  font-family: "Inter";
+  font-style: normal;
+  font-weight: 600;
+  font-size: 90px;
+  line-height: 116px;
+
+  /* Headline */
+
+  color: #455a59;
+}
+
+.form-group {
+  padding: 2px;
+  gap: 11px;
+
+  position: absolute;
+  width: 502px;
+  height: 35px;
+  left: 158px;
+  top: 401px;
+}
+
+.form-group-register {
+  padding: 2px;
+  gap: 11px;
+
+  position: absolute;
+  width: 502px;
+  height: 35px;
+  left: 158px;
+  top: 25vh;
+}
+
+.login-label {
+  padding: 5px;
+  gap: 10px;
+
+  position: absolute;
+  width: 487px;
+  height: 98px;
+  left: 158px;
+  top: 97px;
+
+  letter-spacing: 9px;
+  font-weight: bolder;
+  font-size: 65px;
+  font-style: italic;
+}
+
+#login-btn {
+  display: flex;
+  flex-direction: row;
+  align-items: flex-start;
+  padding: 10px;
+  gap: 10px;
+
+  position: absolute;
+  width: 502px;
+  height: 48px;
+  left: 158px;
+  top: 71vh;
+
+  border-radius: 8px;
+
+  /* Inside auto layout */
+  flex: none;
+  order: 0;
+  flex-grow: 1;
+}
+
+#login-btn-text {
+  font-family: "StrongAFBold";
+  font-style: normal;
+  font-weight: 600;
+  font-size: 25px;
+  line-height: 24px;
+  text-align: center;
+  width: 502px;
+  height: 48px;
+  color: #ffffff;
+}
+
+/* The Close Button */
+.close {
+  color: #aaa;
+  float: right;
+  font-size: 28px;
+  font-weight: bold;
+}
+
+.close:hover,
+.close:focus {
+  color: black;
+  text-decoration: none;
+  cursor: pointer;
+}
