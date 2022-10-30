@@ -249,10 +249,10 @@ function LandingPage(props) {
       </nav>
       <div className="flex flex-row">
         <div className="flex flex-col items-center justify-center h-[91.5vh] w-[17%] bg-white">
-          <h1 className="xl:text-4xl md:text-1xl text-xl font-StrongAF mt-6">
+          <h1 className="xl:text-3xl md:text-2xl sd:text-xl text-base font-StrongAF mt-6">
             {user.armyType} {user.armyRank}
           </h1>
-          <h1 className="xl:text-4xl md:text-2xl text-xl font-StrongAF">
+          <h1 className="xl:text-4xl md:text-3xl sd:text-xl text-base font-StrongAF">
             {user.name}
           </h1>
           <img src={user.image} alt="profile" />
@@ -270,7 +270,7 @@ function LandingPage(props) {
                 onClick={() => setCurrentList(option)}
               >
                 <label
-                  className="lg:text-2xl md:text-xl sm:text-base text-sm font-StrongAFBold focus:border-slate-500 hover:border-b-2 hover:border-slate-800 cursor-pointer"
+                  className="xl:text-2xl md:text-xl text-base font-StrongAF focus:border-slate-500 hover:border-b-2 hover:border-slate-800 cursor-pointer"
                   htmlFor={option.id}
                 >
                   {option.goal}
@@ -278,54 +278,63 @@ function LandingPage(props) {
               </button>
             ))}
           </div>
-          <div
-            id="addTodoListButton"
-            className="flex flex-col justify-between basis-1/6"
-          >
-            <button
-              id="add-todolist-btn"
-              type="button"
-              className="flex flex-row items-center justify-center w-[80%] h-[50px] bg-white rounded-md mt-2"
-              onClick={() => {
-                document.getElementById("delTodoModal").style.display = "block";
-              }}
+          <div className="mt-5">
+            <div
+              id="addTodoListButton"
+              className="flex flex-row justify-between basis-1/6"
             >
-              <img
-                src={TrashImg}
-                alt="add todolist"
-                className="w-8 h-8 mr-2 mb-8"
-              />
-            </button>
-            <button
-              id="add-todolist-btn"
-              type="button"
-              className="flex flex-row items-center justify-center w-[80%] h-[50px] bg-white rounded-md mt-2"
-              onClick={() => {
-                document.getElementById("addTodoListModal").style.display =
-                  "block";
-              }}
+              <button
+                id="add-todolist-btn"
+                type="button"
+                className="flex flex-row items-center justify-center w-[80%] h-[50px] bg-white rounded-md mt-2"
+                onClick={() => {
+                  document.getElementById("delTodoModal").style.display =
+                    "block";
+                }}
+              >
+                <img
+                  src={TrashImg}
+                  alt="add todolist"
+                  className="w-8 h-8 mr-2 mb-8"
+                />
+              </button>
+              <button
+                id="add-todolist-btn"
+                type="button"
+                className="flex flex-row items-center justify-center w-[80%] h-[50px] bg-white rounded-md mt-2"
+                onClick={() => {
+                  document.getElementById("addTodoListModal").style.display =
+                    "block";
+                }}
+              >
+                <img
+                  src={EditTodoBtnImg}
+                  alt="add todolist"
+                  className="w-8 h-8 mr-2 mb-8"
+                />
+              </button>
+              <button
+                id="share-todolist-btn"
+                type="button"
+                onClick={(e) => {
+                  document.getElementById("shareTodoModal").style.display =
+                    "block";
+                }}
+                className="flex flex-row items-center justify-center w-[80%] h-[50px] bg-white rounded-md mt-2"
+              >
+                <img
+                  src={ShareBtnImg}
+                  alt="share todolist"
+                  className="w-8 h-8 mr-2 mb-8"
+                />
+              </button>
+            </div>
+            <a
+              className="font-StrongAF hover:border-slate-800 hover:border-b-2"
+              href="./share"
             >
-              <img
-                src={EditTodoBtnImg}
-                alt="add todolist"
-                className="w-8 h-8 mr-2 mb-8"
-              />
-            </button>
-            <button
-              id="share-todolist-btn"
-              type="button"
-              onClick={(e) => {
-                document.getElementById("shareTodoModal").style.display =
-                  "block";
-              }}
-              className="flex flex-row items-center justify-center w-[80%] h-[50px] bg-white rounded-md mt-2"
-            >
-              <img
-                src={ShareBtnImg}
-                alt="share todolist"
-                className="w-8 h-8 mr-2 mb-8"
-              />
-            </button>
+              다른 TODOLIST
+            </a>
           </div>
           <div
             id="addTodoListModal"
@@ -462,12 +471,6 @@ function LandingPage(props) {
                 </button>
               </div>
             </div>
-            <a
-              className="font-StrongAF hover:border-slate-800 hover:border-b-2"
-              href="./share"
-            >
-              다른 TODOLIST 보러가기
-            </a>
           </div>
         </div>
 
