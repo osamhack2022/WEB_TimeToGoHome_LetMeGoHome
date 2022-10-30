@@ -6,32 +6,40 @@ const prisma = new PrismaClient();
 const router = express.Router();
 
 router.get("/", verifyToken, async (req, res) => {
-  const shareId = Number(req.query.id);
-  const { tag } = req.query;
-  if (tag) {
-    const share = await prisma.share.findMany({
-      orderBy: {
-        hit: "desc",
-      },
-      where: {
-        hashtag: {
-          contains: tag,
+  try {
+    const shareId = Number(req.query.id);
+    const { tag } = req.query;
+    if (tag) {
+      const share = await prisma.share.findMany({
+        orderBy: {
+          hit: "desc",
         },
-      },
+        where: {
+          hashtag: {
+            contains: tag,
+          },
+        },
+      });
+      return res.status(200).json({ code: 200, payload: share });
+    } else if (shareId) {
+      const data = await prisma.share.findFirst({
+        where: { id: shareId },
+      });
+      return res.status(200).json({ code: 200, payload: data });
+    } else {
+      const share = await prisma.share.findMany({
+        orderBy: {
+          hit: "desc",
+        },
+      });
+      return res.status(200).json({ code: 200, payload: share });
+    }
+  } catch (error) {
+    console.error(error);
+    return res.status(500).json({
+      code: 500,
+      message: "Error",
     });
-    return res.status(200).json({ code: 200, payload: share });
-  } else if (shareId) {
-    const data = await prisma.share.findFirst({
-      where: { id: shareId },
-    });
-    return res.status(200).json({ code: 200, payload: data });
-  } else {
-    const share = await prisma.share.findMany({
-      orderBy: {
-        hit: "desc",
-      },
-    });
-    return res.status(200).json({ code: 200, payload: share });
   }
 });
 
