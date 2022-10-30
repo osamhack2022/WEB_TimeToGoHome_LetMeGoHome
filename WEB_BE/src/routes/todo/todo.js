@@ -178,6 +178,11 @@ router.post("/update", verifyToken, async (req, res) => {
 router.post("/delete", verifyToken, async (req, res) => {
   try {
     const { id: todoId } = req.body;
+    const tasks = await prisma.task.deleteMany({
+      where: {
+        todoId: todoId,
+      },
+    });
     const todo = await prisma.todo.delete({
       where: {
         id: todoId,
@@ -185,7 +190,7 @@ router.post("/delete", verifyToken, async (req, res) => {
     });
     return res.json({
       code: 200,
-      payload: todo,
+      payload: { todo, tasks },
     });
   } catch (error) {
     console.error(error);
@@ -233,14 +238,16 @@ router.post("/clone", verifyToken, async (req, res) => {
         (end.getTime() - start.getTime() + DAY) / (7 * DAY)
       ).getTime();
       day_diff = start.getTime() - new Date(todo.start).getTime();
-    } else if (req.body.start || req.body.end) {
-      return res.status(400).json({
-        code: 400,
-        message: "start와 end를 모두 포함하여 요청바랍니다.",
-      });
+    } else if (req.body.start) {
+      start = new Date(req.body.start);
+      day_diff = start.getTime() - new Date(todo.start).getTime();
+      end = new Date(new Date(todo.end).getTime() + day_diff);
+      duration = new Date(
+        (end.getTime() - start.getTime() + DAY) / (7 * DAY)
+      ).getTime();
     } else {
-      start = todo.start;
-      end = todo.end;
+      start = new Date(todo.start);
+      end = new Date(todo.end);
       duration = todo.duration;
     }
     const newTodo = await prisma.todo.create({
