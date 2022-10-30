@@ -12,6 +12,8 @@ import TrashImg from "../images/Trash_1.png";
 import AddTodo from "../images/AddList.png";
 import EditBtnImg from "../images/Edit_fill.png";
 import CheckBtnImg from "../images/Verified.png";
+import EditTodoBtnImg from "../images/edit.png";
+import ShareBtnImg from "../images/share.png";
 
 function LandingPage(props) {
   const { user, setUser, Logout } = props;
@@ -291,7 +293,7 @@ function LandingPage(props) {
               <img
                 src={TrashImg}
                 alt="add todolist"
-                className="w-12 h-12 mr-2 mb-8"
+                className="w-8 h-8 mr-2 mb-8"
               />
             </button>
             <button
@@ -304,9 +306,9 @@ function LandingPage(props) {
               }}
             >
               <img
-                src={AddTodo}
+                src={EditTodoBtnImg}
                 alt="add todolist"
-                className="w-12 h-12 mr-2 mb-8"
+                className="w-8 h-8 mr-2 mb-8"
               />
             </button>
             <button
@@ -319,9 +321,9 @@ function LandingPage(props) {
               className="flex flex-row items-center justify-center w-[80%] h-[50px] bg-white rounded-md mt-2"
             >
               <img
-                src={AddTodo} // TODO: share 버튼 이미지로 교체할 것
+                src={ShareBtnImg}
                 alt="share todolist"
-                className="w-12 h-12 mr-2 mb-8"
+                className="w-8 h-8 mr-2 mb-8"
               />
             </button>
           </div>
