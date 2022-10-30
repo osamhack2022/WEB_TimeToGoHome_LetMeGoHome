@@ -234,8 +234,8 @@ function LandingPage(props) {
   return (
     <div>
       <nav className="bg-primary h-20 flex items-center justify-between">
-        <h1 className="font-StrongAFBold xl:text-4xl md:text-2xl text-xl ml-[45px] text-white">
-          이젠 돌아갈 때
+        <h1 className="font-StrongAFBold text-4xl ml-[45px] text-white">
+          <a href="./">이젠 돌아갈 때</a>
         </h1>
         <button
           type="button"
@@ -257,7 +257,11 @@ function LandingPage(props) {
           <div className="grow flex flex-col justify-center w-full">
             {todoLists.map((option) => (
               <button
-                className="flex flex-row items-center justify-center bg-white rounded-md mt-2 focus:border-b-2 focus:bg-primary focus:text-white"
+                className={`flex flex-row items-center justify-center w-full mt-3 py-2 ${
+                  option.id === currentList.id
+                    ? "border-b-2 bg-primary text-white"
+                    : ""
+                }`}
                 key={option.id}
                 type="button"
                 id={option.id}
@@ -274,7 +278,7 @@ function LandingPage(props) {
           </div>
           <div
             id="addTodoListButton"
-            className="flex flex-row content-between basis-1/6"
+            className="flex flex-col justify-between basis-1/6"
           >
             <button
               id="add-todolist-btn"
@@ -456,6 +460,12 @@ function LandingPage(props) {
                 </button>
               </div>
             </div>
+            <a
+              className="font-StrongAF hover:border-slate-800 hover:border-b-2"
+              href="./share"
+            >
+              다른 TODOLIST 보러가기
+            </a>
           </div>
         </div>
 

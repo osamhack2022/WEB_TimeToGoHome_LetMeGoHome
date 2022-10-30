@@ -56,6 +56,7 @@ export default function App() {
       discharge: "",
     });
     localStorage.clear();
+    // navigate("/");
   };
 
   return (
