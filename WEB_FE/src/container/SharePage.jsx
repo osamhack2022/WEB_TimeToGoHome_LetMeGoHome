@@ -8,6 +8,7 @@ function SharePage({ user, Logout }) {
   const [hashtagList, setHashtagList] = useState([]);
   const [todoLists, setTodoLists] = useState([]);
   const [hashtag, setHashtag] = useState("");
+
   useEffect(() => {
     axios.get("/api/share/tags").then((res) => {
       setHashtagList([...res.data.payload]);
@@ -32,8 +33,8 @@ function SharePage({ user, Logout }) {
   return (
     <div className="w-full h-full font-StrongAF">
       <nav className="bg-primary w-full h-20 flex items-center justify-between">
-        <h1 className="font-StrongAFBold xl:text-4xl md:text-2xl text-xl ml-[45px] text-white">
-          이젠 돌아갈 때
+        <h1 className="font-StrongAFBold text-4xl ml-[45px] text-white">
+          <a href="./">이젠 돌아갈 때</a>
         </h1>
         <button
           type="button"
@@ -44,13 +45,17 @@ function SharePage({ user, Logout }) {
         </button>
       </nav>
       <div className="flex flex-row">
-        <div className="flex flex-col items-center justify-start text-2xl h-full w-[17%] bg-white">
+        <div className="flex flex-col items-center justify-start lg:text-3xl md:text-2xl sm:text-base h-full w-[17%] bg-white">
           {hashtagList.map((tag) => (
-            <div className="w-full">
+            <div
+              className={`w-full mt-3 ${
+                hashtag === tag ? "bg-primary text-white" : ""
+              }`}
+            >
               <button
                 type="button"
-                className="w-full h-20"
-                onClick={() => {
+                className="w-full h-fit py-2"
+                onClick={(e) => {
                   setHashtag(tag);
                 }}
               >
@@ -73,10 +78,14 @@ function SharePage({ user, Logout }) {
                 </div>
                 <div className="bg-white w-full h-fit p-3">
                   <div>
-                    <span className="p-5 text-2xl">{todo.title}</span>
+                    <span className="p-5 lg:text-3xl md:text-2xl sm:text-xl text-base">
+                      {todo.title}
+                    </span>
                   </div>
                   <div>
-                    <span className="p-5 text-xl">{todo.description}</span>
+                    <span className="p-5 lg:text-2xl md:text-xl sm:text-base text-sm">
+                      {todo.description}
+                    </span>
                   </div>
                 </div>
               </div>

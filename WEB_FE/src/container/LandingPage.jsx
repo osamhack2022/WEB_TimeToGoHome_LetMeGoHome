@@ -205,8 +205,8 @@ function LandingPage({ user, Logout }) {
   return (
     <div>
       <nav className="bg-primary h-20 flex items-center justify-between">
-        <h1 className="font-StrongAFBold xl:text-4xl md:text-2xl text-xl ml-[45px] text-white">
-          이젠 돌아갈 때
+        <h1 className="font-StrongAFBold text-4xl ml-[45px] text-white">
+          <a href="./">이젠 돌아갈 때</a>
         </h1>
         <button
           type="button"
@@ -227,7 +227,11 @@ function LandingPage({ user, Logout }) {
           <div className="grow flex flex-col justify-center w-full">
             {todoLists.map((option) => (
               <button
-                className="flex flex-row items-center justify-center bg-white rounded-md mt-2 focus:border-b-2 focus:bg-primary focus:text-white"
+                className={`flex flex-row items-center justify-center w-full mt-3 py-2 ${
+                  option.id === currentList.id
+                    ? "border-b-2 bg-primary text-white"
+                    : ""
+                }`}
                 key={option.id}
                 type="button"
                 id={option.id}
@@ -263,7 +267,10 @@ function LandingPage({ user, Logout }) {
                 TODOLIST 추가
               </label>
             </button>
-            <a className="font-StrongAF hover:border-slate-800 hover:border-b-2" href="./share">
+            <a
+              className="font-StrongAF hover:border-slate-800 hover:border-b-2"
+              href="./share"
+            >
               다른 TODOLIST 보러가기
             </a>
           </div>
